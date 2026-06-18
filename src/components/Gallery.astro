@@ -1,0 +1,177 @@
+---
+interface Props {
+  count: number;
+  heading?: string;
+}
+
+const { count, heading = 'Gallery' } = Astro.props;
+const items = Array.from({ length: count }, (_, i) => i);
+---
+
+<section class="gallery">
+  <div class="gallery__inner">
+    <h2 class="gallery__heading scroll-reveal">{heading}</h2>
+    <div class="gallery__grid">
+      {items.map((i) => (
+        <button class="gallery__item scroll-reveal" type="button" data-index={i} aria-label={`Open image ${i + 1}`}>
+          <span class="gallery__placeholder">{i + 1}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="gallery__lightbox" data-lightbox hidden>
+    <button class="gallery__lightbox-close" type="button" data-lightbox-close aria-label="Close">&times;</button>
+    <div class="gallery__lightbox-frame">
+      <span class="gallery__lightbox-placeholder" data-lightbox-content></span>
+    </div>
+  </div>
+</section>
+
+<script>
+  const gallery = document.currentScript?.closest('.gallery') ?? document.querySelector('.gallery');
+  if (gallery) {
+    const lightbox = gallery.querySelector<HTMLElement>('[data-lightbox]');
+    const lightboxContent = gallery.querySelector<HTMLElement>('[data-lightbox-content]');
+    const closeBtn = gallery.querySelector<HTMLElement>('[data-lightbox-close]');
+    const items = gallery.querySelectorAll<HTMLElement>('.gallery__item');
+
+    const open = (index: number) => {
+      if (!lightbox || !lightboxContent) return;
+      lightboxContent.textContent = String(index + 1);
+      lightbox.hidden = false;
+    };
+
+    const close = () => {
+      if (!lightbox) return;
+      lightbox.hidden = true;
+    };
+
+    items.forEach((item) => {
+      item.addEventListener('click', () => {
+        const index = Number(item.dataset.index);
+        open(index);
+      });
+    });
+
+    closeBtn?.addEventListener('click', close);
+    lightbox?.addEventListener('click', (e) => {
+      if (e.target === lightbox) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+  }
+</script>
+
+<style>
+  .gallery {
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .gallery__inner {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+
+  .gallery__heading {
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, var(--fs-2xl));
+    line-height: var(--lh-tight);
+    margin-bottom: var(--space-xl);
+  }
+
+  .gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+
+  .gallery__item {
+    appearance: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-raised);
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition:
+      border-color var(--duration-fast) var(--ease-out-expo),
+      transform var(--duration-fast) var(--ease-out-expo);
+  }
+
+  .gallery__item:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  .gallery__placeholder {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--fs-xl);
+    color: var(--color-text-faint);
+  }
+
+  .gallery__lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  .gallery__lightbox[hidden] {
+    display: none;
+  }
+
+  .gallery__lightbox-frame {
+    width: min(80vw, 800px);
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery__lightbox-placeholder {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--fs-2xl);
+    color: var(--color-text-faint);
+  }
+
+  .gallery__lightbox-close {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    appearance: none;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-bg-raised);
+    color: var(--color-text);
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: var(--fs-md);
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  @media (max-width: 900px) {
+    .gallery__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .gallery__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

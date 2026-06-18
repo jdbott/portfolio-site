@@ -1,0 +1,105 @@
+---
+import type { TimelineItem } from '../data/areas';
+
+interface Props {
+  items: TimelineItem[];
+  heading?: string;
+}
+
+const { items, heading = 'Timeline' } = Astro.props;
+---
+
+<section class="timeline">
+  <div class="timeline__inner">
+    <h2 class="timeline__heading scroll-reveal">{heading}</h2>
+    <ol class="timeline__list">
+      {items.map((item) => (
+        <li class="timeline__item scroll-reveal">
+          <span class="timeline__date">{item.date}</span>
+          <span class="timeline__marker" aria-hidden="true"></span>
+          <div class="timeline__body">
+            <h3 class="timeline__title">{item.title}</h3>
+            <p class="timeline__description">{item.description}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .timeline__inner {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+
+  .timeline__heading {
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, var(--fs-2xl));
+    line-height: var(--lh-tight);
+    margin-bottom: var(--space-xl);
+  }
+
+  .timeline__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .timeline__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: var(--space-lg);
+    padding: 0 0 var(--space-xl) var(--space-lg);
+  }
+
+  .timeline__item:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline__marker {
+    position: absolute;
+    left: -1px;
+    top: 0.4rem;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-accent-strong);
+    transform: translateX(-50%);
+    box-shadow: 0 0 0 4px var(--color-bg);
+  }
+
+  .timeline__date {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-sm);
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .timeline__title {
+    font-weight: 700;
+    font-size: var(--fs-md);
+    margin-bottom: var(--space-2xs);
+  }
+
+  .timeline__description {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+    max-width: 60ch;
+  }
+
+  @media (max-width: 640px) {
+    .timeline__item {
+      grid-template-columns: 1fr;
+      gap: var(--space-2xs);
+    }
+  }
+</style>

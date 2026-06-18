@@ -1,0 +1,394 @@
+---
+import { Image } from 'astro:assets';
+import wireframeImg from '../assets/robot-reveal/robot-wireframe.png';
+import photoImg from '../assets/robot-reveal/robot-photo.jpg';
+---
+
+<section class="robot-reveal" id="robot-reveal">
+  <div class="robot-reveal__sticky">
+    <div class="robot-reveal__bg" aria-hidden="true"></div>
+
+    <div class="robot-reveal__stage" aria-hidden="true">
+      <div class="robot-reveal__tile robot-reveal__tile--wire" data-tile="a-wire">
+        <Image class="robot-reveal__img" src={wireframeImg} alt="" widths={[600, 1200, 2000, 3296]} sizes="(max-width: 900px) 90vw, 100vw" />
+      </div>
+      <div class="robot-reveal__tile robot-reveal__tile--photo" data-tile="a-photo">
+        <Image class="robot-reveal__img" src={photoImg} alt="" widths={[800, 1600, 2800, 4000]} sizes="(max-width: 900px) 90vw, 100vw" />
+      </div>
+      <div class="robot-reveal__tile robot-reveal__tile--wire" data-tile="b-wire">
+        <Image class="robot-reveal__img" src={wireframeImg} alt="" widths={[600, 1200, 2000, 3296]} sizes="(max-width: 900px) 90vw, 100vw" />
+      </div>
+      <div class="robot-reveal__tile robot-reveal__tile--photo" data-tile="b-photo">
+        <Image class="robot-reveal__img" src={photoImg} alt="" widths={[800, 1600, 2800, 4000]} sizes="(max-width: 900px) 90vw, 100vw" />
+      </div>
+    </div>
+
+    <div class="robot-reveal__caption">
+      <p class="robot-reveal__eyebrow">Robotics</p>
+      <h2 class="robot-reveal__heading">CAD to competition floor.</h2>
+    </div>
+
+    <div class="robot-reveal__ctas" data-ctas>
+      <a class="robot-reveal__cta robot-reveal__cta--primary" href="/robotics/">
+        Explore robotics &rarr;
+      </a>
+      <a class="robot-reveal__cta"
+   href="https://cad.onshape.com/documents/a780c1194046674ebeaee628/w/53c76e62cb8c5692db04155b/e/3a1e28af5efb9fad93377e71?renderMode=0&uiState=6a31b266782d036b89114f9e"
+   target="_blank"
+   rel="noopener">
+  View the CAD &#8599;
+</a>
+
+<a class="robot-reveal__cta"
+   href="https://youtu.be/XRzj1UUvYGE?si=Vb0Yqy-eFn3OLx_5"
+   target="_blank"
+   rel="noopener">
+  Watch on YouTube &#8599;
+</a>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const section = document.querySelector<HTMLElement>('.robot-reveal');
+  const aWire = section?.querySelector<HTMLElement>('[data-tile="a-wire"]');
+  const aPhoto = section?.querySelector<HTMLElement>('[data-tile="a-photo"]');
+  const bWire = section?.querySelector<HTMLElement>('[data-tile="b-wire"]');
+  const bPhoto = section?.querySelector<HTMLElement>('[data-tile="b-photo"]');
+  const bg = section?.querySelector<HTMLElement>('.robot-reveal__bg');
+  const ctas = section?.querySelector<HTMLElement>('[data-ctas]');
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (section && aWire && aPhoto && bWire && bPhoto && bg && ctas && !reduceMotion) {
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * Math.min(1, Math.max(0, t));
+    const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
+
+    // ---- Orientation -----------------------------------------------------
+    // Facing-angle (deg) for tile A at each phase boundary (p = 0, SEG1,
+    // SEG2, 1). Tile B always trails by B_OFFSET deg. Tweak these to change
+    // which way the tiles are facing at the start/end of each phase.
+    const A_ANGLES = [-90, 0, 90, 180];
+    const B_OFFSET = -180;
+
+    // The whole sequence is one continuous orbit, keyframed at each
+    // quarter-turn (p = 0, 1/3, 2/3, 1):
+    //   p = 0:    A swings in from the bottom-right.
+    //   p = SEG1: A and B become tangent (just touching) and hard-cut from
+    //             wireframe to photo.
+    //   p = SEG2: A and B sit side-by-side, "parallel".
+    //   p = 1:    B has grown to fill the whole screen.
+    const SEG1 = 1 / 3;
+    const SEG2 = 2 / 3;
+
+    // Wireframe -> photo hard-cut happens right when A and B become tangent.
+    const CROSSFADE_AT = SEG1;
+
+    // A fades out near the end so B's full-screen photo reads cleanly.
+    const A_FADE_OUT_START = 0.85;
+
+    // CTAs fade in once B has nearly finished spinning into its final,
+    // full-screen pose (i.e. the rotation is "almost done").
+    const CTAS_FADE_IN_START = 0.92;
+
+    // As B finishes its spin into the final pose (p: SEG2 -> 1), its tile
+    // widens from square to the photo's real aspect ratio (6000x4000),
+    // so the full image shows uncropped instead of being "cover"-cropped
+    // to a square.
+    const IMAGE_ASPECT = 6000 / 4000;
+
+    // Keyframes: {x, y} are the tile-center offset from screen-center, in vw/vh.
+    // Tile size is clamp(220px, 60vw, 900px); scales are relative to that.
+    type Key = { x: number; y: number; scale: number };
+    const A_KEY: Key[] = [
+      { x: 40, y: 38, scale: 0.52 },   // p = 0,    swinging in
+      { x: -22.4, y: 0, scale: 0.693 }, // p = SEG1, tangent with B
+      { x: -22, y: -4, scale: 0.867 }, // p = SEG2, parallel with B
+      { x: -8, y: -20, scale: 1.213 }, // p = 1,    fading out
+    ];
+    const B_KEY: Key[] = [
+      { x: 55, y: 50, scale: 0.217 },  // p = 0,    spinning in from off-screen
+      { x: 22.4, y: 0, scale: 0.693 }, // p = SEG1, tangent with A
+      { x: 22, y: -4, scale: 0.953 },  // p = SEG2, parallel with A
+      { x: 0, y: 0, scale: 1.2 },      // p = 1,    fills the screen (after widening)
+    ];
+
+    const mix = (k0: Key, k1: Key, t: number): Key => ({
+      x: lerp(k0.x, k1.x, t),
+      y: lerp(k0.y, k1.y, t),
+      scale: lerp(k0.scale, k1.scale, t),
+    });
+
+    const keyframe = (key: Key[], angles: number[], p: number) => {
+      let k0: Key, k1: Key, a0: number, a1: number, t: number;
+      if (p <= SEG1) {
+        [k0, k1, a0, a1, t] = [key[0], key[1], angles[0], angles[1], p / SEG1];
+      } else if (p <= SEG2) {
+        [k0, k1, a0, a1, t] = [key[1], key[2], angles[1], angles[2], (p - SEG1) / (SEG2 - SEG1)];
+      } else {
+        [k0, k1, a0, a1, t] = [key[2], key[3], angles[2], angles[3], (p - SEG2) / (1 - SEG2)];
+      }
+      return { ...mix(k0, k1, t), rot: lerp(a0, a1, t) };
+    };
+
+    let ticking = false;
+
+    const update = () => {
+      const rect = section.getBoundingClientRect();
+      const scrollable = rect.height - window.innerHeight;
+      const p = clamp01(-rect.top / scrollable);
+
+      const a = keyframe(A_KEY, A_ANGLES, p);
+      const b = keyframe(B_KEY, A_ANGLES.map((deg) => deg + B_OFFSET), p);
+
+      // A fades out near the very end, once B has grown to fill the screen.
+      const aop = p < A_FADE_OUT_START ? 1 : 1 - (p - A_FADE_OUT_START) / (1 - A_FADE_OUT_START);
+
+      const transformA = `translate(-50%, -50%) translate(${a.x}vw, ${a.y}vh) rotate(${a.rot}deg) scale(${a.scale})`;
+      const transformB = `translate(-50%, -50%) translate(${b.x}vw, ${b.y}vh) rotate(${b.rot}deg) scale(${b.scale})`;
+
+      const aWireOn = p < CROSSFADE_AT ? aop : 0;
+      const aPhotoOn = p < CROSSFADE_AT ? 0 : aop;
+      const bWireOn = p < CROSSFADE_AT ? 1 : 0;
+      const bPhotoOn = p < CROSSFADE_AT ? 0 : 1;
+
+      aWire.style.transform = transformA;
+      aPhoto.style.transform = transformA;
+      bWire.style.transform = transformB;
+      bPhoto.style.transform = transformB;
+
+      aWire.style.opacity = String(aWireOn);
+      aPhoto.style.opacity = String(aPhotoOn);
+      bWire.style.opacity = String(bWireOn);
+      bPhoto.style.opacity = String(bPhotoOn);
+
+      bg.style.opacity = p >= CROSSFADE_AT ? '1' : '0';
+
+      // Fade the CTAs in once the orbit has nearly settled into its final
+      // full-screen pose, and back out if the user scrolls back up.
+      const ctasOn = clamp01((p - CTAS_FADE_IN_START) / (1 - CTAS_FADE_IN_START));
+      ctas.style.opacity = String(ctasOn);
+      ctas.style.pointerEvents = ctasOn > 0.5 ? 'auto' : 'none';
+
+      // Widen B's tile from square towards the photo's real aspect ratio
+      // as it finishes spinning into its final pose, so it ends uncropped.
+      const widenT = clamp01((p - SEG2) / (1 - SEG2));
+      const bAspect = lerp(1, IMAGE_ASPECT, widenT);
+      const bWidth = `clamp(${220 * bAspect}px, ${60 * bAspect}vw, ${900 * bAspect}px)`;
+      bWire.style.width = bWidth;
+      bPhoto.style.width = bWidth;
+
+      ticking = false;
+    };
+
+    update();
+
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    });
+
+    window.addEventListener('resize', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    });
+  }
+</script>
+
+<style>
+  /* ---- Scroll-through robot reveal ----
+     Tall section with a pinned (sticky) viewport. The whole sequence is
+     one continuous orbit: tile A's facing-angle sweeps 0deg -> 270deg
+     while tile B trails 180deg behind (-90deg -> 90deg).
+       - Tile A swings up from the bottom-right while tile B spins in from
+         off-screen, both as wireframes, until their edges are tangent
+         (facing 90deg / -90deg).
+       - At that tangent moment both tiles hard-cut from wireframe to
+         photo, and a background tint fades in.
+       - Continuing the orbit, A grows to face 180deg and B rotates to
+         face 0deg - the two now sit parallel along the x-axis.
+       - A keeps growing to face 270deg and fades out, while B grows to
+         fill the entire screen as a static-looking photo. */
+  .robot-reveal {
+    position: relative;
+    height: 320vh;
+  }
+
+  .robot-reveal__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .robot-reveal__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      circle at 50% 50%,
+      var(--color-accent-soft) 0%,
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity var(--duration-fast) linear;
+  }
+
+  .robot-reveal__stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  .robot-reveal__tile {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* Sized larger than its on-screen footprint (scale values in the script
+       are correspondingly smaller) so images are rasterized closer to their
+       final displayed size instead of being blurrily scaled up. */
+    width: clamp(220px, 60vw, 900px);
+    height: clamp(220px, 60vw, 900px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 3px solid var(--color-accent);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-raised);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    will-change: transform, opacity;
+  }
+
+  .robot-reveal__tile--photo {
+    opacity: 0;
+  }
+
+  .robot-reveal__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    display: block;
+  }
+
+  .robot-reveal__caption {
+    position: absolute;
+    left: var(--space-lg);
+    bottom: var(--space-lg);
+    max-width: 40ch;
+  }
+
+  .robot-reveal__eyebrow {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    margin-bottom: var(--space-xs);
+  }
+
+  .robot-reveal__heading {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, var(--fs-2xl));
+    line-height: var(--lh-tight);
+  }
+
+  /* ---- CTAs ----
+     Sit in the top-left corner and fade in only once the orbit has nearly
+     settled into its final full-screen pose (see CTAS_FADE_IN_START). */
+  .robot-reveal__ctas {
+    position: absolute;
+    /* Cleared below the fixed nav bar so the links aren't cut off. */
+    top: calc(var(--space-lg) + 5rem);
+    left: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2xs);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-base) var(--ease-out-expo);
+  }
+
+  .robot-reveal__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-text);
+    background: rgba(14, 14, 19, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2xs) var(--space-sm);
+    transition:
+      border-color var(--duration-fast) var(--ease-out-expo),
+      color var(--duration-fast) var(--ease-out-expo);
+  }
+
+  .robot-reveal__cta:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent-strong);
+  }
+
+  .robot-reveal__cta--primary {
+    border-color: var(--color-accent);
+    color: var(--color-accent-strong);
+    font-weight: 700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .robot-reveal {
+      height: auto;
+    }
+
+    .robot-reveal__sticky {
+      position: static;
+      height: auto;
+      padding: var(--space-2xl) var(--space-lg);
+    }
+
+    .robot-reveal__bg {
+      display: none;
+    }
+
+    .robot-reveal__stage {
+      position: static;
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+
+    .robot-reveal__tile--wire {
+      display: none;
+    }
+
+    .robot-reveal__tile--photo {
+      position: relative;
+      left: auto;
+      top: auto;
+      transform: none !important;
+      opacity: 1 !important;
+      width: clamp(180px, 40vw, 320px);
+      height: clamp(180px, 40vw, 320px);
+    }
+
+    .robot-reveal__caption {
+      position: static;
+      margin-top: var(--space-lg);
+    }
+
+    .robot-reveal__ctas {
+      position: static;
+      opacity: 1;
+      pointer-events: auto;
+      margin-top: var(--space-md);
+    }
+  }
+</style>

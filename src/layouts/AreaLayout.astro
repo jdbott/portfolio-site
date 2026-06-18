@@ -1,0 +1,92 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import StatsBand from '../components/StatsBand.astro';
+import Timeline from '../components/Timeline.astro';
+import ContentCards from '../components/ContentCards.astro';
+import Gallery from '../components/Gallery.astro';
+import Quote from '../components/Quote.astro';
+import type { Area } from '../data/areas';
+
+interface Props {
+  area: Area;
+}
+
+const { area } = Astro.props;
+---
+
+<BaseLayout title={`${area.title} — Jason Bottino`} description={area.summary} navAlwaysVisible>
+  <header class="area-hero">
+    <div class="area-hero__inner">
+      <p class="area-hero__eyebrow scroll-reveal">{String(area.order).padStart(2, '0')} — Area</p>
+      <h1 class="area-hero__title scroll-reveal">{area.title}</h1>
+      <p class="area-hero__summary scroll-reveal">{area.summary}</p>
+    </div>
+  </header>
+
+  <StatsBand stats={area.stats} />
+
+  {area.timeline.length > 0 && <Timeline items={area.timeline} />}
+
+  <ContentCards heading={area.cardsHeading} cards={area.cards} />
+
+  <Gallery count={area.galleryCount} />
+
+  <Quote quote={area.quote} />
+</BaseLayout>
+
+<script>
+  const reveals = document.querySelectorAll('.scroll-reveal');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      }
+    },
+    { threshold: 0.2, rootMargin: '0px 0px -10% 0px' }
+  );
+
+  reveals.forEach((el, i) => {
+    (el as HTMLElement).style.transitionDelay = `${(i % 4) * 90}ms`;
+    observer.observe(el);
+  });
+</script>
+
+<style>
+  .area-hero {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    padding: var(--space-3xl) var(--space-lg) var(--space-xl);
+  }
+
+  .area-hero__inner {
+    max-width: var(--content-max-width);
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .area-hero__eyebrow {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-accent-strong);
+    margin-bottom: var(--space-md);
+  }
+
+  .area-hero__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.5rem, 9vw, var(--fs-3xl));
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+  }
+
+  .area-hero__summary {
+    font-size: var(--fs-md);
+    color: var(--color-text-muted);
+    max-width: 50ch;
+  }
+</style>

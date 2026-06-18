@@ -1,0 +1,99 @@
+---
+import type { Card } from '../data/areas';
+
+interface Props {
+  heading: string;
+  cards: Card[];
+}
+
+const { heading, cards } = Astro.props;
+---
+
+<section class="content-cards">
+  <div class="content-cards__inner">
+    <h2 class="content-cards__heading scroll-reveal">{heading}</h2>
+    <div class="content-cards__grid">
+      {cards.map((card) => (
+        <article class="content-card scroll-reveal">
+          {card.tag && <span class="content-card__tag">{card.tag}</span>}
+          <h3 class="content-card__title">{card.title}</h3>
+          <p class="content-card__description">{card.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .content-cards {
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .content-cards__inner {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+
+  .content-cards__heading {
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, var(--fs-2xl));
+    line-height: var(--lh-tight);
+    margin-bottom: var(--space-xl);
+  }
+
+  .content-cards__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .content-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-raised);
+    transition: border-color var(--duration-fast) var(--ease-out-expo);
+  }
+
+  .content-card:hover {
+    border-color: var(--color-accent);
+  }
+
+  .content-card__tag {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: var(--fs-2xs);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold-soft);
+    background: var(--color-gold-soft);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3xs) var(--space-2xs);
+  }
+
+  .content-card__title {
+    font-weight: 700;
+    font-size: var(--fs-md);
+  }
+
+  .content-card__description {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 900px) {
+    .content-cards__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .content-cards__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

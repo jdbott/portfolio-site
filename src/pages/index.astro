@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import RobotReveal from '../components/RobotReveal.astro';
+import StatsBand from '../components/StatsBand.astro';
+import AreaHighlights from '../components/AreaHighlights.astro';
+---
+
+<BaseLayout>
+  <Hero />
+  <RobotReveal />
+  <StatsBand />
+  <AreaHighlights />
+</BaseLayout>
+
+<script>
+  const reveals = document.querySelectorAll('.scroll-reveal');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      }
+    },
+    { threshold: 0.2, rootMargin: '0px 0px -10% 0px' }
+  );
+
+  reveals.forEach((el, i) => {
+    (el as HTMLElement).style.transitionDelay = `${(i % 4) * 90}ms`;
+    observer.observe(el);
+  });
+</script>

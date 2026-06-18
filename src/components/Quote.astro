@@ -1,0 +1,43 @@
+---
+import type { Quote } from '../data/areas';
+
+interface Props {
+  quote: Quote;
+}
+
+const { quote } = Astro.props;
+---
+
+<section class="quote">
+  <div class="quote__inner scroll-reveal">
+    <blockquote class="quote__text">&ldquo;{quote.text}&rdquo;</blockquote>
+    <p class="quote__attribution">&mdash; {quote.attribution}</p>
+  </div>
+</section>
+
+<style>
+  .quote {
+    padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
+  }
+
+  .quote__inner {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    border-left: 2px solid var(--color-accent);
+    padding-left: var(--space-lg);
+  }
+
+  .quote__text {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.25rem, 4vw, var(--fs-xl));
+    line-height: var(--lh-snug);
+    margin: 0;
+  }
+
+  .quote__attribution {
+    margin-top: var(--space-sm);
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+  }
+</style>

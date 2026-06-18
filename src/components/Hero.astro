@@ -1,0 +1,565 @@
+---
+import { descriptors } from '../data/descriptors';
+import { Image } from 'astro:assets';
+import roboticistImg from '../assets/hero-carousel/roboticist.jpeg';
+import policyAdvocateImg from '../assets/hero-carousel/policy-advocate.jpeg';
+import builderImg from '../assets/hero-carousel/builder.png';
+import catalystImg from '../assets/hero-carousel/catalyst.jpeg';
+import studentImg from '../assets/hero-carousel/student.jpeg';
+import volunteerImg from '../assets/hero-carousel/volunteer.jpeg';
+import artistImg from '../assets/bonsai.JPG';
+
+// Keep this order aligned with `descriptors`: each photo arrives with its role.
+const rolePhotos = [
+  // Portrait-oriented crops retain more of the robot and the builder vertically.
+  { role: 'Roboticist', src: roboticistImg, cropAspect: 4 / 5, position: '50% 58%' },
+  { role: 'Policy Advocate', src: policyAdvocateImg, cropAspect: 4 / 5, position: '50% 48%' },
+  { role: 'Builder', src: builderImg, cropAspect: 4 / 5, position: '54% 50%' },
+  { role: 'Catalyst', src: catalystImg },
+  { role: 'Student', src: studentImg },
+  // These taller originals benefit from trimming the top and bottom.
+  { role: 'Volunteer', src: volunteerImg, cropAspect: 1, position: '50% 48%' },
+  { role: 'Artist', src: artistImg, cropAspect: 4 / 6, position: '50% 50%' },
+];
+---
+
+<section class="hero" id="hero">
+  <div class="glow" aria-hidden="true">
+    <span class="glow__blob glow__blob--accent"></span>
+    <span class="glow__blob glow__blob--gold"></span>
+    <span class="glow__blob glow__blob--spectrum"></span>
+  </div>
+
+  <div class="hero__content">
+    <p class="hero__eyebrow reveal" data-reveal style="--delay: 0ms">Portfolio</p>
+
+    <h1 class="hero__name reveal" data-reveal style="--delay: 80ms">
+      Jason<br />Bottino
+    </h1>
+
+    <div class="hero__role reveal" data-reveal style="--delay: 200ms">
+      <span class="hero__role-label">Currently building as a</span>
+      <span class="hero__role-word" id="role-word" aria-live="polite">{descriptors[0]}</span>
+    </div>
+
+    <h4 class="hero__tagline reveal" data-reveal style="--delay: 320ms">
+      Effort is only effort when it begins to hurt. <br> &emsp; &emsp; &mdash; José Ortega y Gasset
+    </h4>
+  </div>
+
+  <div class="hero__scroll-cue reveal" data-reveal style="--delay: 480ms" aria-hidden="true">
+    <span class="hero__scroll-line"></span>
+    <span class="hero__scroll-text">Scroll</span>
+  </div>
+
+  <div class="orbit" aria-hidden="true">
+    {rolePhotos.map((photo, i) => {
+      const displayAspect = photo.cropAspect ?? photo.src.width / photo.src.height;
+      const width = `clamp(${Math.round(280 * displayAspect)}px, ${35.5 * displayAspect}vw, ${Math.round(500 * displayAspect)}px)`;
+
+      return (
+      <div class="orbit__photo" style={`--i: ${i}; --photo-width: ${width}`}>
+        <Image
+          class="orbit__image"
+          src={photo.src}
+          alt=""
+          widths={[480, 720, 960, 1280]}
+          sizes="(min-width: 900px) 66vw, 0px"
+          quality={90}
+          loading="eager"
+          fetchpriority={i === 0 ? 'high' : 'auto'}
+          style={`object-position: ${photo.position ?? '50% 50%'}`}
+        />
+      </div>
+      );
+    })}
+  </div>
+</section>
+
+<script define:vars={{ descriptors }}>
+  // ---- Rotating role word ----
+  const roleWord = document.getElementById('role-word');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (roleWord && descriptors.length > 1) {
+    let index = 0;
+    setInterval(() => {
+      index = (index + 1) % descriptors.length;
+      const next = descriptors[index];
+
+      if (reduceMotion) {
+        roleWord.textContent = next;
+        return;
+      }
+
+      roleWord.classList.add('is-leaving');
+      setTimeout(() => {
+        roleWord.classList.remove('is-leaving');
+        roleWord.classList.add('is-spinning');
+
+        // Brief slot-machine flicker through other candidates before settling.
+        const spinTicks = 5;
+        const spinPool = descriptors.filter((d) => d !== next);
+        let tick = 0;
+        const spin = setInterval(() => {
+          roleWord.textContent = spinPool[Math.floor(Math.random() * spinPool.length)];
+          tick++;
+          if (tick >= spinTicks) {
+            clearInterval(spin);
+            roleWord.textContent = next;
+            roleWord.classList.remove('is-spinning');
+            roleWord.classList.add('is-settling');
+            setTimeout(() => roleWord.classList.remove('is-settling'), 320);
+          }
+        }, 55);
+      }, 180);
+    }, 2600);
+  }
+
+  // ---- On-load entrance ----
+  requestAnimationFrame(() => {
+    document.querySelectorAll('[data-reveal]').forEach((el) => {
+      el.classList.add('is-visible');
+    });
+    document.querySelector('.hero')?.classList.add('is-loaded');
+  });
+
+  // ---- Scroll parallax on the glow ----
+  if (!reduceMotion) {
+    const glow = document.querySelector('.glow');
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (glow) {
+          glow.style.transform = `translateY(${y * 0.25}px) scale(${1 + y * 0.0004})`;
+          glow.style.opacity = String(Math.max(0, 1 - y / 700));
+        }
+        ticking = false;
+      });
+    });
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    padding: var(--space-xl) var(--space-lg);
+    isolation: isolate;
+  }
+
+  /* ---- Generative glow background ---- */
+  .glow {
+    position: absolute;
+    inset: -20%;
+    z-index: -1;
+    transition: opacity var(--duration-cinematic) var(--ease-out-expo);
+    will-change: transform, opacity;
+  }
+
+  .glow__blob {
+    position: absolute;
+    border-radius: 32% 68% 75% 25% / 38% 35% 65% 62%;
+    filter: blur(46px);
+    opacity: 0;
+    transform: scale(0.6);
+    transition:
+      opacity var(--duration-cinematic) var(--ease-out-expo),
+      transform var(--duration-cinematic) var(--ease-out-expo);
+  }
+
+  .hero.is-loaded .glow__blob {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .glow__blob--accent {
+    width: 50vw;
+    height: 50vw;
+    top: 8%;
+    right: 5%;
+    background: radial-gradient(circle, var(--color-accent) 0%, var(--color-accent) 60%, transparent 72%);
+    animation:
+      drift-a 26s ease-in-out infinite alternate,
+      morph-a 37s ease-in-out infinite alternate;
+    transition-delay: 0ms;
+  }
+
+  .glow__blob--gold {
+    width: 32vw;
+    height: 32vw;
+    bottom: 10%;
+    left: 8%;
+    background: radial-gradient(circle, var(--color-gold) 0%, var(--color-gold) 60%, transparent 72%);
+    opacity: 0;
+    animation:
+      drift-b 32s ease-in-out infinite alternate,
+      morph-b 44s ease-in-out infinite alternate;
+    transition-delay: 200ms;
+  }
+
+  .hero.is-loaded .glow__blob--gold {
+    opacity: 0.3;
+  }
+
+  .glow__blob--spectrum {
+    width: 38vw;
+    height: 38vw;
+    top: 35%;
+    left: 35%;
+    filter: blur(46px);
+    background: conic-gradient(
+      from 0deg,
+      var(--color-spectrum-1),
+      var(--color-spectrum-2),
+      var(--color-spectrum-3),
+      var(--color-spectrum-4),
+      var(--color-spectrum-5),
+      var(--color-spectrum-6),
+      var(--color-spectrum-1)
+    );
+    opacity: 0;
+    mix-blend-mode: soft-light;
+    animation:
+      spin-slow 60s linear infinite,
+      morph-c 51s ease-in-out infinite alternate;
+    transition-delay: 400ms;
+  }
+
+  .hero.is-loaded .glow__blob--spectrum {
+    opacity: 0.18;
+  }
+
+  @keyframes drift-a {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(-16%, 20%) scale(1.25); }
+  }
+
+  /* Slow, subtle organic blob-shape morphing */
+  @keyframes morph-a {
+    0% { border-radius: 32% 68% 75% 25% / 38% 35% 65% 62%; }
+    33% { border-radius: 70% 30% 40% 60% / 60% 75% 25% 40%; }
+    66% { border-radius: 38% 62% 22% 78% / 30% 55% 45% 70%; }
+    100% { border-radius: 65% 35% 68% 32% / 55% 28% 72% 45%; }
+  }
+
+  @keyframes morph-b {
+    0% { border-radius: 65% 35% 30% 70% / 55% 65% 35% 45%; }
+    33% { border-radius: 30% 70% 72% 28% / 70% 32% 68% 30%; }
+    66% { border-radius: 75% 25% 48% 52% / 32% 70% 30% 68%; }
+    100% { border-radius: 40% 60% 65% 35% / 65% 38% 62% 35%; }
+  }
+
+  @keyframes morph-c {
+    0% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
+    50% { border-radius: 70% 30% 35% 65% / 35% 65% 70% 30%; }
+    100% { border-radius: 35% 65% 70% 30% / 65% 35% 30% 70%; }
+  }
+
+  @keyframes drift-b {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(18%, -22%) scale(1.18); }
+  }
+
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* ---- Content ---- */
+  .hero__content {
+    position: relative;
+    max-width: var(--content-max-width);
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .hero__eyebrow {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-text-faint);
+    margin-bottom: var(--space-md);
+  }
+
+  .hero__name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(3rem, 12vw, var(--fs-4xl));
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero__role {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-xs);
+    font-size: var(--fs-lg);
+    margin-bottom: var(--space-md);
+  }
+
+  .hero__role-label {
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .hero__role-word {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-accent-strong);
+    display: inline-block;
+    transform-origin: 50% 50%;
+    transition:
+      opacity var(--duration-base) var(--ease-out-expo),
+      transform var(--duration-base) var(--ease-out-expo);
+  }
+
+  .hero__role-word.is-leaving {
+    opacity: 0;
+    transform: translateY(0.4em);
+  }
+
+  /* Brief slot-machine flicker through other words before settling */
+  .hero__role-word.is-spinning {
+    animation: role-spin 130ms linear infinite;
+  }
+
+  @keyframes role-spin {
+    0% {
+      transform: translateY(-18%);
+      opacity: 0.55;
+      filter: blur(2px);
+    }
+    50% {
+      transform: translateY(10%);
+      opacity: 1;
+      filter: blur(0.5px);
+    }
+    100% {
+      transform: translateY(-18%);
+      opacity: 0.55;
+      filter: blur(2px);
+    }
+  }
+
+  /* Settle into final position with a slight overshoot */
+  .hero__role-word.is-settling {
+    animation: role-settle 320ms var(--ease-out-expo) forwards;
+  }
+
+  @keyframes role-settle {
+    0% {
+      transform: translateY(-22%);
+      opacity: 0.4;
+      filter: blur(2px);
+    }
+    65% {
+      transform: translateY(6%);
+      opacity: 1;
+      filter: blur(0);
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+      filter: blur(0);
+    }
+  }
+
+  .hero__tagline {
+    font-size: var(--fs-md);
+    color: var(--color-text-muted);
+    max-width: 36ch;
+  }
+
+  /* ---- Scroll cue ---- */
+  .hero__scroll-cue {
+    position: absolute;
+    bottom: var(--space-lg);
+    left: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-text-faint);
+    font-size: var(--fs-2xs);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .hero__scroll-line {
+    display: block;
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--color-text-faint), transparent);
+    animation: scroll-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse {
+    0%, 100% { transform: scaleY(1); opacity: 0.4; }
+    50% { transform: scaleY(1.4); opacity: 1; }
+  }
+
+  /* ---- Generic reveal-on-load ---- */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity var(--duration-slow) var(--ease-out-expo),
+      transform var(--duration-slow) var(--ease-out-expo);
+    transition-delay: var(--delay, 0ms);
+  }
+
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glow__blob,
+    .glow__blob--accent,
+    .glow__blob--gold,
+    .glow__blob--spectrum {
+      animation: none !important;
+    }
+
+    .hero__role-word.is-spinning,
+    .hero__role-word.is-settling {
+      animation: none !important;
+    }
+
+    .orbit__photo {
+      animation: none !important;
+      opacity: 0 !important;
+    }
+  }
+
+  /* ---- Orbiting photo carousel ----
+     One photo on screen at a time, cycling through 7. Each photo travels
+     the RIGHT edge of a large implied circle (center off to the left):
+     it enters low on the left, arcs OUT to its rightmost point as it
+     pauses at the vertical middle (max distance from the left edge),
+     then arcs back in toward the left as it exits up top.
+     Anchor sits at the right-middle; translate(0,0) is the rightmost
+     (pause) point, negative X pulls it back toward the left. Each photo
+     is only visible for its own 2.6s slot in the 18.2s loop (synced to the
+     descriptor rotation), staggered so they take turns. */
+  .orbit {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    display: none;
+  }
+
+  .orbit__photo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--photo-width);
+    height: clamp(280px, 35.5vw, 500px);
+    border: 3px solid var(--color-accent);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-raised);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    /* Travel the right edge of a large circle whose center sits off to the
+       left at the vertical middle: the rightmost point (offset 25%) lands
+       at the right-middle of the screen, and the arc curves back toward the
+       left at the top (0%) and bottom (50%). offset-anchor keeps the card's
+       center on the path; offset-rotate 0 keeps it upright. */
+    /* Large radius: the circle's rightmost point (the apex/pause) sits at
+       72vw regardless of radius, but a bigger radius pushes the bottom
+       (entry) and top (exit) points far enough off-screen that the card
+       is fully outside the viewport — vertically and visually — before
+       it appears or after it disappears. */
+    offset-path: circle(95vh at calc(72vw - 95vh) 50%);
+    offset-anchor: 50% 50%;
+    offset-rotate: 0deg;
+    will-change: offset-distance, opacity;
+    /* Motion and fade are separate animations: opacity flips to 1/0 only
+       at the instants the card is fully off-screen (path keyframes
+       25%/-25%), so it never fades in/out while partially visible.
+       18.2s loop = 7 x 2.6s, matching the rotating-descriptor interval
+       in the script below. */
+    animation:
+      orbit-path 18.2s linear infinite,
+      orbit-fade 18.2s linear infinite;
+    animation-delay: calc(var(--i) * 2.6s);
+    overflow: hidden;
+  }
+
+  .orbit__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Note: circle() starts its path at 3 o'clock (right) and runs clockwise,
+     so offset-distance 0% = right-middle (the apex/pause), 25% = bottom,
+     -25% (= 75%) = top. We decrease continuously so the card always travels
+     one rotational direction: bottom -> right -> top while visible, then
+     top -> left -> bottom around the back while hidden.
+
+     Synced to the rotating descriptor (2.6s interval, ~775ms to fully
+     settle: 180ms leave + 275ms spin + 320ms settle), shifted ~150ms
+     earlier overall so the swing-in finishes right as the word settles
+     and the swing-out finishes a beat *before* the next word starts
+     changing (rather than landing on the exact same instant):
+       0%     -  3.43%  swing in from off-screen below to the apex —
+                         625ms, finishing just as the word settles
+       3.43%  -  9.20%  dwell at the apex (right-middle) — ~1.05s
+       9.20%  - 13.46%  swing out to off-screen above — 775ms, finishing
+                         ~150ms before the next word starts changing
+       13.46% - 100%    hidden return arc back to the entry point */
+  @keyframes orbit-path {
+    0% {
+      offset-distance: 25%;
+      /* ease-out: decelerate smoothly into the apex/pause */
+      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    3.43% {
+      offset-distance: 0%;
+      animation-timing-function: linear;
+    }
+    9.20% {
+      offset-distance: 0%;
+      /* ease-in: accelerate smoothly out of the pause and off-screen */
+      animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.2);
+    }
+    13.46% {
+      offset-distance: -25%;
+      animation-timing-function: linear;
+    }
+    /* circle back around the off-screen left side, arriving back at the
+       entry point (-75% == 25%, the loop seam) while fully hidden */
+    100% {
+      offset-distance: -75%;
+    }
+  }
+
+  /* Opacity flips only at 13.46% / -25% on the path above — both points are
+     fully off-screen thanks to the large radius — so the card is always
+     either fully visible or fully hidden, never mid-fade in frame. */
+  @keyframes orbit-fade {
+    0% { opacity: 1; }
+    13.46% { opacity: 1; }
+    13.461% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  @media (min-width: 900px) {
+    .orbit {
+      display: block;
+    }
+  }
+</style>
