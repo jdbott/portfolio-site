@@ -2,13 +2,14 @@
 interface Props {
   count: number;
   heading?: string;
+  compact?: boolean;
 }
 
-const { count, heading = 'Gallery' } = Astro.props;
+const { count, heading = 'Gallery', compact = false } = Astro.props;
 const items = Array.from({ length: count }, (_, i) => i);
 ---
 
-<section class="gallery">
+<section class:list={['gallery', { 'gallery--compact': compact }]}>
   <div class="gallery__inner">
     <h2 class="gallery__heading scroll-reveal">{heading}</h2>
     <div class="gallery__grid">
@@ -67,6 +68,11 @@ const items = Array.from({ length: count }, (_, i) => i);
 <style>
   .gallery {
     padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .gallery--compact {
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-xl);
   }
 
   .gallery__inner {

@@ -3,6 +3,8 @@ import type { Stat } from '../data/areas';
 
 interface Props {
   stats?: Stat[];
+  compact?: boolean;
+  spacedTail?: boolean;
 }
 
 const {
@@ -12,10 +14,12 @@ const {
     { value: '150+', label: 'Community service hours' },
     { value: '6', label: 'Awards & recognitions' },
   ],
+  compact = false,
+  spacedTail = false,
 } = Astro.props;
 ---
 
-<section class="stats">
+<section class:list={['stats', { 'stats--compact': compact, 'stats--spaced-tail': spacedTail }]}>
   <div class="stats__inner">
     {stats.map((stat) => (
       <div class="stats__item scroll-reveal">
@@ -31,6 +35,11 @@ const {
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
     padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .stats--compact {
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-lg);
   }
 
   .stats__inner {
@@ -61,10 +70,22 @@ const {
     max-width: 18ch;
   }
 
+  .stats--spaced-tail .stats__item:nth-child(3) {
+    transform: translateX(1.25rem);
+  }
+
+  .stats--spaced-tail .stats__item:nth-child(4) {
+    transform: translateX(2.5rem);
+  }
+
   @media (max-width: 760px) {
     .stats__inner {
       grid-template-columns: repeat(2, 1fr);
       gap: var(--space-xl) var(--space-lg);
+    }
+
+    .stats--spaced-tail .stats__item:nth-child(n) {
+      transform: none;
     }
   }
 </style>

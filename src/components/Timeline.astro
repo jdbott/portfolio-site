@@ -19,7 +19,13 @@ const { items, heading = 'Timeline' } = Astro.props;
           <span class="timeline__marker" aria-hidden="true"></span>
           <div class="timeline__body">
             <h3 class="timeline__title">{item.title}</h3>
+            {item.meta && <p class="timeline__meta">{item.meta}</p>}
             <p class="timeline__description">{item.description}</p>
+            {item.courses && item.courses.length > 0 && (
+              <ul class="timeline__courses" aria-label={`${item.date} courses`}>
+                {item.courses.map((course) => <li>{course}</li>)}
+              </ul>
+            )}
           </div>
         </li>
       ))}
@@ -54,7 +60,7 @@ const { items, heading = 'Timeline' } = Astro.props;
   .timeline__item {
     position: relative;
     display: grid;
-    grid-template-columns: 6rem 1fr;
+    grid-template-columns: 9rem minmax(0, 1fr);
     gap: var(--space-lg);
     padding: 0 0 var(--space-xl) var(--space-lg);
   }
@@ -87,13 +93,39 @@ const { items, heading = 'Timeline' } = Astro.props;
   .timeline__title {
     font-weight: 700;
     font-size: var(--fs-md);
-    margin-bottom: var(--space-2xs);
+  }
+
+  .timeline__meta {
+    margin-top: var(--space-3xs);
+    color: var(--color-gold);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.03em;
   }
 
   .timeline__description {
+    margin-top: var(--space-sm);
     font-size: var(--fs-sm);
     color: var(--color-text-muted);
     max-width: 60ch;
+  }
+
+  .timeline__courses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    list-style: none;
+    margin: var(--space-md) 0 0;
+    padding: 0;
+  }
+
+  .timeline__courses li {
+    padding: var(--space-3xs) var(--space-xs);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-bg-raised);
+    color: var(--color-text-muted);
+    font-size: var(--fs-xs);
   }
 
   @media (max-width: 640px) {

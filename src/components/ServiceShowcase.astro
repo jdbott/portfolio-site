@@ -1,0 +1,372 @@
+---
+import { Image } from 'astro:assets';
+import proclamationImg from '../assets/proclaimation.jpeg';
+import policyImg from '../assets/hero-carousel/policy-advocate.jpeg';
+import rickCohenImg from '../assets/rickcohen.jpeg';
+import campImg from '../assets/campinvention.jpeg';
+import roboticsImg from '../assets/robotics.jpeg';
+import mediaAdvocacyImg from '../assets/mediaadvocacy.jpeg';
+
+const organizedEvents = [
+  'Nashua Public Library Summer Reading Kickoff',
+  'YMCA of Greater Nashua CAD & 3D-printing workshops',
+  'Hollis Social Library summer programs',
+  'Nashua and Merrimack Y Academy STEM stations',
+  'Clark-Wilkins and Mont Vernon afterschool programs',
+  'Nashua Goes Back to School',
+];
+
+const supportedEvents = [
+  'Brian S. McCarthy Family STEM Day',
+  'Barnes & Noble Nashua story time and robot demo',
+  'NorthSouth Foundation Bees',
+  'Nashua Public Library CAD & 3D-printing workshops',
+  'Thunder Over New Hampshire Air Show',
+];
+---
+
+<main class="service-showcase">
+  <section class="service-intro section-shell">
+    <div class="service-intro__marker scroll-reveal" aria-hidden="true">01</div>
+    <div class="service-intro__content scroll-reveal">
+      <p class="section-kicker">Why access matters</p>
+      <h2>Opportunity becomes more powerful when it is shared.</h2>
+      <p>
+        STEM gave me a place to express technical creativity, build confidence, and imagine a future in which I could make a meaningful contribution. As artificial intelligence and other technologies reshape the world, I believe every young person deserves an inviting way into the programs that will help shape it.
+      </p>
+      <p>
+        The largest barrier is often not ability, but visibility: students may see STEM as only coding or math instead of teamwork, design, experimentation, and invention. I try to make the first step fun and attainable—then meet each learner where they are, so curiosity has room to become commitment.
+      </p>
+    </div>
+  </section>
+
+  <section class="advocacy section-shell" aria-labelledby="advocacy-title">
+    <div class="section-heading scroll-reveal">
+      <p class="section-kicker">Advocacy</p>
+      <h2 id="advocacy-title">Turning conversation into access</h2>
+      <p>From young students to public officials and business leaders, I have learned that clear, energetic communication can turn awareness into concrete support.</p>
+    </div>
+
+    <div class="advocacy-grid">
+      <article class="advocacy-lead scroll-reveal">
+        <div class="advocacy-lead__media">
+          <Image src={policyImg} alt="Jason Bottino discussing robotics advocacy at a Team Tesseract event" widths={[500, 760, 1000]} sizes="(max-width: 760px) 100vw, 42vw" quality={90} loading="lazy" />
+          <span class="media-label">Federal advocacy · 2025</span>
+        </div>
+        <div class="advocacy-lead__copy">
+          <p class="card-number">01 / Public policy</p>
+          <h3>From a meeting to federal support</h3>
+          <p>After I introduced Representative Maggie Goodlander to FIRST and its impact, she became a cosponsor of H.Res.147, an introduced House resolution supporting a National FIRST Robotics Day.</p>
+          <a href="https://www.congress.gov/bill/119th-congress/house-resolution/147/cosponsors" target="_blank" rel="noreferrer">View the official resolution <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+
+      <div class="advocacy-secondary">
+      <article class="advocacy-card scroll-reveal">
+        <Image class="advocacy-card__image" src={proclamationImg} alt="The 2025 New Hampshire FIRST Robotics Awareness Month proclamation" widths={[420, 640, 820]} sizes="(max-width: 760px) 100vw, 28vw" quality={90} loading="lazy" />
+        <div>
+          <p class="card-number">02 / Statewide recognition</p>
+          <h3>FIRST Robotics Awareness Month</h3>
+          <p>I worked directly with Governor Kelly Ayotte’s office to help draft and secure proclamations recognizing April as FIRST Robotics Awareness Month in New Hampshire in both 2025 and 2026. The proclamations also prompted local newspaper coverage reaching more than 80,000 people.</p>
+        </div>
+      </article>
+
+      <article class="advocacy-card scroll-reveal">
+        <Image class="advocacy-card__image" src={mediaAdvocacyImg} alt="Jason Bottino advocating for FIRST Robotics through media coverage" widths={[420, 640, 820]} sizes="(max-width: 760px) 100vw, 28vw" quality={90} loading="lazy" />
+        <div>
+          <p class="card-number">03 / Media advocacy</p>
+          <h3>Bringing FIRST to a broader audience</h3>
+          <p>Through interviews with WMUR and 7News Boston, I advocated directly for FIRST and helped introduce its opportunities to television audiences across New Hampshire and New England.</p>
+        </div>
+      </article>
+
+      <article class="advocacy-card scroll-reveal">
+        <Image class="advocacy-card__image" src={rickCohenImg} alt="Jason Bottino showing a FIRST Tech Challenge robot to Symbotic founder Rick Cohen" widths={[420, 640, 820]} sizes="(max-width: 760px) 100vw, 28vw" quality={90} loading="lazy" />
+        <div>
+          <p class="card-number">04 / Industry engagement</p>
+          <h3>Making the mission tangible</h3>
+          <p>When I met Symbotic founder and CEO Rick Cohen, I connected FIRST participation to the creative and technical skills needed in the future workforce. A conversation became hands-on engagement with our robot—and another advocate ready to share the program’s value.</p>
+        </div>
+      </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="mentoring section-shell" aria-labelledby="mentoring-title">
+    <div class="mentoring__visual scroll-reveal">
+      <Image src={roboticsImg} alt="Team Tesseract's FIRST Tech Challenge robot competing" widths={[500, 760, 1000, 1300]} sizes="(max-width: 820px) 100vw, 44vw" quality={90} loading="lazy" />
+      <div class="mentoring__visual-stat"><strong>45</strong><span>local students mentored</span></div>
+    </div>
+    <div class="mentoring__copy scroll-reveal">
+      <p class="section-kicker">Mentorship</p>
+      <h2 id="mentoring-title">Building confidence alongside robots</h2>
+      <p>Across two seasons and more than 100 hours, I have worked with 45 students on three FTC teams at Hollis-Brookline Middle School, supported two teams at Greenland Middle School, and provided virtual guidance to teams in Vietnam, Texas, and Massachusetts.</p>
+      <p>I also conceived and organized <em>Tesseract Talks</em>, a three-episode educational series sharing mechanical-design knowledge with thousands of viewers. Whether support happens beside a workbench or across a video call, the goal is the same: make expertise feel reachable.</p>
+      <ul class="impact-list">
+        <li><strong>5 teams</strong><span>supported in person</span></li>
+        <li><strong>3 regions</strong><span>reached through virtual mentoring</span></li>
+        <li><strong>3 episodes</strong><span>of Tesseract Talks produced</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="fundraising section-shell" aria-labelledby="fundraising-title">
+    <div class="fundraising__total scroll-reveal">
+      <span>Combined impact</span>
+      <strong>$24K+</strong>
+      <p>personally secured for STEM programs</p>
+    </div>
+    <div class="fundraising__copy scroll-reveal">
+      <p class="section-kicker">Fundraising</p>
+      <h2 id="fundraising-title">Resources turn good ideas into durable programs.</h2>
+      <p>I have led corporate outreach and relationship-based campaigns that secured approximately $14,000 for Team Tesseract, including more than $9,000 in the most recent season. That support directly funds robot components, competition registration, team apparel, banners, and the infrastructure that lets students participate fully.</p>
+      <p>Combined with more than $10,000 raised for the Elementary Science Fair, this work has taught me to connect a partner’s priorities with a concrete community outcome—and then follow through responsibly on the opportunity their support creates.</p>
+    </div>
+  </section>
+
+  <section class="science-fair section-shell" aria-labelledby="fair-title">
+    <div class="section-heading scroll-reveal">
+      <p class="section-kicker">A program rebuilt</p>
+      <h2 id="fair-title">Hollis-Brookline Elementary Science Fair</h2>
+      <p>After the pandemic ended a tradition I had loved as an elementary student, I contacted the Hollis Elementary PTA and offered to bring it back.</p>
+    </div>
+    <div class="fair-grid">
+      <div class="fair-impact scroll-reveal">
+        <div><strong>4</strong><span>completed fairs since 2022</span></div>
+        <div><strong>≈350</strong><span>student presenters</span></div>
+        <div><strong>4</strong><span>elementary schools</span></div>
+        <div><strong>$10K+</strong><span>in sponsorships secured</span></div>
+      </div>
+      <div class="fair-story scroll-reveal">
+        <p>I select each year’s theme, secure sponsorships, manage registration and communications, coordinate volunteers and demonstrations, oversee logistics, and serve as master of ceremonies. Themes have ranged from Chain Reactions and Magnetism to MythBusters and the Environment.</p>
+        <p>Each fair brings together 60–90 student presenters and hundreds of family and community visitors. Sponsorships cover event expenses and help schools acquire resources including model rockets, Osmo coding tools, LEGO Education kits, a weather station, and drone kits.</p>
+        <p class="fair-story__future"><span>Designed to last</span> I am documenting the complete process so the fair can eventually pass to another student organizer—and offer them the same kind of leadership opportunity it gave me.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="outreach section-shell" aria-labelledby="outreach-title">
+    <div class="section-heading scroll-reveal">
+      <p class="section-kicker">Community outreach</p>
+      <h2 id="outreach-title">Lead with the exciting part</h2>
+      <p>I bring competition robots, smaller robots I have built, hands-on activities, original programming games, and practical FIRST resources into public spaces. A memorable first experience gives people a reason to explore everything underneath it.</p>
+    </div>
+    <div class="outreach-columns">
+      <article class="event-list scroll-reveal">
+        <p class="event-list__label"><span></span> Organized by me</p>
+        <ul>{organizedEvents.map((event) => <li>{event}</li>)}</ul>
+      </article>
+      <article class="event-list event-list--supported scroll-reveal">
+        <p class="event-list__label"><span></span> Supported as a volunteer</p>
+        <ul>{supportedEvents.map((event) => <li>{event}</li>)}</ul>
+      </article>
+    </div>
+    <p class="outreach-note scroll-reveal">Many programs recur annually, allowing a single event to become a sustained community partnership.</p>
+  </section>
+
+  <section class="camp section-shell" aria-labelledby="camp-title">
+    <div class="camp__image scroll-reveal">
+      <Image src={campImg} alt="Jason Bottino with fellow Camp Invention counselors" widths={[600, 900, 1200, 1600, 2200]} sizes="(max-width: 820px) 100vw, 58vw" quality={90} loading="lazy" />
+      <span class="media-label">Merrimack & Hollis · 2023–2025</span>
+    </div>
+    <div class="camp__copy scroll-reveal">
+      <p class="section-kicker">Camp Invention</p>
+      <h2 id="camp-title">Three summers of hands-on learning</h2>
+      <p>For three summers, I helped groups of 20–30 students in grades 1–6 move through full weeks of ambitious STEM challenges. I coordinated daily transitions, guided complex builds, managed conflicts, and kept each group moving toward a shared goal without losing the fun that made them want to participate.</p>
+      <div class="camp__metric"><strong>155</strong><span>hours volunteered across three summers</span></div>
+    </div>
+  </section>
+
+  <section class="food-access section-shell" aria-labelledby="food-title">
+    <div class="food-access__title scroll-reveal">
+      <p class="section-kicker">Beyond STEM</p>
+      <h2 id="food-title">Food access makes every other opportunity possible.</h2>
+    </div>
+    <div class="food-access__copy scroll-reveal">
+      <p>Learning is difficult when a student is hungry. Living near farms with excess fresh food also makes the opportunity to help especially immediate, so I regularly pack weekend food bags for End 68 Hours of Hunger Nashua and deliver gleaned produce to senior housing and local nonprofits.</p>
+      <p>When SNAP benefits were delayed in 2025, I added a food drive to the Science Fair and coordinated its delivery to the Brookline Food Pantry. This work has taught me that service is more than completing a task: it is compassion practiced alongside people who make giving back joyful and sustaining.</p>
+    </div>
+  </section>
+
+  <section class="service-future section-shell">
+    <p class="section-kicker scroll-reveal">What comes next</p>
+    <div class="service-future__quote" aria-label="My impact should not end with what I can contribute alone. It grows when I help other people gain the access and confidence to contribute at their best, too.">
+      <blockquote class="service-future__quote-base">“My impact should not end with what I can contribute alone. It grows when I help other people gain the access and confidence to contribute at their best, too.”</blockquote>
+      <blockquote class="service-future__quote-sharp" aria-hidden="true">“My impact should not end with what I can contribute alone. It grows when I help other people gain the access and confidence to contribute at their best, too.”</blockquote>
+    </div>
+    <p class="service-future__copy scroll-reveal">Over the next two years, I plan to expand these partnerships, bring more funding to the programs I support, and create thoughtful handoff plans so the initiatives I lead can continue when I leave for college.</p>
+  </section>
+</main>
+
+<script>
+  const quoteStages = Array.from(document.querySelectorAll<HTMLElement>('.service-future__quote'));
+  const reduceQuoteMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (quoteStages.length > 0 && !reduceQuoteMotion) {
+    let quoteFrame = 0;
+
+    const updateQuoteFocus = () => {
+      const viewportCenter = window.innerHeight / 2;
+      quoteStages.forEach((stage) => {
+        const rect = stage.getBoundingClientRect();
+        const lineHeight = Number.parseFloat(getComputedStyle(stage).lineHeight) || 80;
+        const bandHeight = lineHeight * 1.5;
+        const bandCenter = viewportCenter - rect.top;
+        const feather = lineHeight * 0.55;
+        const intersects = bandCenter + bandHeight / 2 + feather > 0 && bandCenter - bandHeight / 2 - feather < rect.height;
+
+        stage.style.setProperty('--focus-center', `${bandCenter.toFixed(2)}px`);
+        stage.style.setProperty('--focus-half', `${(bandHeight / 2).toFixed(2)}px`);
+        stage.style.setProperty('--focus-feather', `${feather.toFixed(2)}px`);
+        stage.style.setProperty('--focus-opacity', intersects ? '1' : '0');
+      });
+
+      quoteFrame = 0;
+    };
+
+    const requestQuoteUpdate = () => {
+      if (quoteFrame === 0) quoteFrame = window.requestAnimationFrame(updateQuoteFocus);
+    };
+
+    updateQuoteFocus();
+    window.addEventListener('scroll', requestQuoteUpdate, { passive: true });
+    window.addEventListener('resize', requestQuoteUpdate);
+  }
+</script>
+
+<style>
+  .service-showcase { overflow: hidden; }
+  .section-shell { max-width: var(--content-max-width); margin: 0 auto; padding: var(--space-3xl) var(--space-lg); }
+  .section-kicker { margin-bottom: var(--space-sm); color: var(--color-gold); font-size: var(--fs-xs); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
+  .section-heading { display: grid; grid-template-columns: minmax(260px, .9fr) minmax(280px, 1.1fr); gap: var(--space-xl); align-items: end; margin-bottom: var(--space-xl); }
+  .section-heading .section-kicker { grid-column: 1 / -1; margin-bottom: calc(-1 * var(--space-lg)); }
+  .section-heading h2, .service-intro h2, .mentoring h2, .camp h2, .food-access h2 { font-size: clamp(2rem, 5vw, var(--fs-2xl)); }
+  .section-heading > p:last-child, .service-intro__content > p, .mentoring__copy > p, .camp__copy > p, .food-access__copy > p { color: var(--color-text-muted); line-height: 1.75; }
+
+  .service-intro { display: grid; grid-template-columns: .45fr 1.55fr; gap: var(--space-xl); border-bottom: 1px solid var(--color-border); }
+  .service-intro { padding-bottom: var(--space-xl); }
+  .service-intro__marker { font-family: var(--font-display); font-size: clamp(5rem, 15vw, 11rem); font-weight: 800; line-height: .75; color: var(--color-accent-soft); }
+  .service-intro__content { max-width: 820px; }
+  .service-intro h2 { margin-bottom: var(--space-lg); }
+  .service-intro__content > p + p { margin-top: var(--space-md); }
+
+  .advocacy { max-width: 1400px; padding-top: var(--space-xl); padding-bottom: var(--space-xl); }
+  .advocacy-grid { display: grid; gap: var(--space-lg); }
+  .advocacy-lead { display: grid; grid-template-columns: minmax(300px, .8fr) minmax(320px, 1.2fr); min-height: 620px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-bg-raised); }
+  .advocacy-lead__media { position: relative; min-height: 560px; overflow: hidden; }
+  .advocacy-lead__media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 33%; }
+  .media-label { position: absolute; left: var(--space-md); bottom: var(--space-md); padding: .45rem .7rem; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(7,7,10,.72); backdrop-filter: blur(12px); font-size: var(--fs-2xs); letter-spacing: .1em; text-transform: uppercase; }
+  .advocacy-lead__copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(2rem, 6vw, 6rem); }
+  .card-number { margin-bottom: var(--space-sm); color: var(--color-accent-strong); font-size: var(--fs-xs); letter-spacing: .14em; text-transform: uppercase; }
+  .advocacy-lead h3, .advocacy-card h3 { margin-bottom: var(--space-md); font-size: clamp(1.5rem, 3.2vw, 2.5rem); }
+  .advocacy-lead__copy > p:not(.card-number), .advocacy-card p:not(.card-number) { color: var(--color-text-muted); line-height: 1.72; }
+  .advocacy-lead__copy > p + p { margin-top: var(--space-md); }
+  .advocacy-lead a { display: inline-block; align-self: flex-start; margin-top: var(--space-md); color: var(--color-gold); font-size: var(--fs-xs); text-underline-offset: .3em; }
+  .advocacy-secondary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-lg); }
+  .advocacy-card { display: flex; min-width: 0; flex-direction: column; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-bg-raised); }
+  .advocacy-card__image { width: 100%; height: 280px; object-fit: cover; object-position: center; }
+  .advocacy-card > div:last-child { flex: 1; padding: clamp(1.5rem, 3vw, 2.5rem); }
+  .advocacy-card__placeholder { position: relative; display: flex; height: 280px; flex-direction: column; justify-content: flex-end; gap: var(--space-2xs); padding: var(--space-lg); background: radial-gradient(circle at 28% 25%, var(--color-accent-soft), transparent 36%), linear-gradient(145deg, var(--color-bg-overlay), var(--color-bg-raised)); color: var(--color-text-faint); font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; }
+  .advocacy-card__placeholder::after { content: ''; position: absolute; inset: 12%; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .advocacy-card__placeholder span, .advocacy-card__placeholder code { position: relative; z-index: 1; }
+  .advocacy-card__placeholder code { color: var(--color-text-muted); font-size: var(--fs-2xs); letter-spacing: 0; text-transform: none; overflow-wrap: anywhere; }
+
+  .mentoring { display: grid; grid-template-columns: minmax(300px, .9fr) minmax(320px, 1.1fr); gap: clamp(3rem, 8vw, 8rem); align-items: center; padding-top: var(--space-xl); padding-bottom: var(--space-xl); }
+  .mentoring__visual { position: relative; min-height: 650px; border-radius: var(--radius-lg); overflow: hidden; }
+  .mentoring__visual img { width: 100%; height: 100%; object-fit: cover; }
+  .mentoring__visual-stat { position: absolute; right: var(--space-md); bottom: var(--space-md); width: 160px; padding: var(--space-md); border-radius: var(--radius-md); background: rgba(7,7,10,.84); backdrop-filter: blur(14px); }
+  .mentoring__visual-stat strong { display: block; font-family: var(--font-display); font-size: var(--fs-xl); color: var(--color-accent-strong); }
+  .mentoring__visual-stat span { color: var(--color-text-muted); font-size: var(--fs-xs); }
+  .mentoring h2 { margin-bottom: var(--space-lg); }
+  .mentoring__copy > p + p { margin-top: var(--space-md); }
+  .impact-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); margin: var(--space-xl) 0 0; padding: var(--space-lg) 0 0; border-top: 1px solid var(--color-border); list-style: none; }
+  .impact-list strong, .impact-list span { display: block; }
+  .impact-list strong { font-family: var(--font-display); font-size: var(--fs-md); }
+  .impact-list span { margin-top: var(--space-2xs); color: var(--color-text-faint); font-size: var(--fs-2xs); }
+
+  .fundraising { display: grid; grid-template-columns: minmax(300px, .7fr) minmax(360px, 1.3fr); gap: clamp(3rem, 8vw, 8rem); align-items: center; padding-top: var(--space-xl); padding-bottom: var(--space-xl); border-top: 1px solid var(--color-border); }
+  .fundraising__total { min-width: 0; padding: var(--space-lg); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: radial-gradient(circle at 25% 20%, var(--color-accent-soft), transparent 52%), var(--color-bg-raised); }
+  .fundraising__total span, .fundraising__total strong, .fundraising__total p { display: block; }
+  .fundraising__total span { color: var(--color-gold); font-size: var(--fs-xs); letter-spacing: .14em; text-transform: uppercase; }
+  .fundraising__total strong { margin: var(--space-sm) 0; font-family: var(--font-display); font-size: clamp(3.25rem, 5vw, 4.5rem); letter-spacing: -.06em; line-height: 1; color: var(--color-accent-strong); white-space: nowrap; }
+  .fundraising__total p { color: var(--color-text-muted); }
+  .fundraising__copy h2 { margin-bottom: var(--space-lg); font-size: clamp(2rem, 5vw, var(--fs-2xl)); }
+  .fundraising__copy > p:not(.section-kicker) { color: var(--color-text-muted); line-height: 1.75; }
+  .fundraising__copy > p + p { margin-top: var(--space-md); }
+
+  .science-fair { max-width: none; padding-top: var(--space-xl); padding-right: max(var(--space-lg), calc((100vw - var(--content-max-width))/2 + var(--space-lg))); padding-bottom: var(--space-xl); padding-left: max(var(--space-lg), calc((100vw - var(--content-max-width))/2 + var(--space-lg))); background: var(--color-bg-raised); }
+  .fair-grid { display: grid; grid-template-columns: minmax(280px, .8fr) minmax(360px, 1.2fr); gap: clamp(3rem, 8vw, 8rem); }
+  .fair-impact { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--color-border); border-left: 1px solid var(--color-border); }
+  .fair-impact > div { min-height: 180px; padding: var(--space-lg); border-right: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+  .fair-impact strong, .fair-impact span { display: block; }
+  .fair-impact strong { font-family: var(--font-display); font-size: clamp(2rem, 5vw, var(--fs-xl)); color: var(--color-accent-strong); }
+  .fair-impact span { margin-top: var(--space-xs); color: var(--color-text-muted); font-size: var(--fs-xs); }
+  .fair-story { color: var(--color-text-muted); font-size: var(--fs-sm); line-height: 1.8; }
+  .fair-story > p + p { margin-top: var(--space-md); }
+  .fair-story__future { padding: var(--space-lg); border-left: 2px solid var(--color-gold); background: var(--color-gold-soft); }
+  .fair-story__future span { display: block; margin-bottom: var(--space-xs); color: var(--color-gold); font-size: var(--fs-xs); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+
+  .outreach { padding-top: var(--space-xl); padding-bottom: var(--space-xl); }
+  .outreach-columns { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+  .event-list { padding: var(--space-xl); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: linear-gradient(145deg, var(--color-accent-soft), var(--color-bg-raised) 58%); }
+  .event-list--supported { background: linear-gradient(145deg, var(--color-gold-soft), var(--color-bg-raised) 58%); }
+  .event-list__label { display: flex; align-items: center; gap: var(--space-xs); margin-bottom: var(--space-lg); color: var(--color-accent-strong); font-size: var(--fs-xs); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+  .event-list--supported .event-list__label { color: var(--color-gold); }
+  .event-list__label span { width: 9px; height: 9px; border-radius: 50%; background: currentColor; box-shadow: 0 0 18px currentColor; }
+  .event-list ul { margin: 0; padding: 0; list-style: none; }
+  .event-list li { padding: var(--space-sm) 0; border-top: 1px solid var(--color-border); color: var(--color-text-muted); }
+  .outreach-note { margin-top: var(--space-lg); color: var(--color-text-faint); font-size: var(--fs-xs); font-style: italic; }
+
+  .camp { display: grid; grid-template-columns: minmax(320px, 1.2fr) minmax(280px, .8fr); gap: clamp(3rem, 7vw, 7rem); align-items: center; padding-top: var(--space-xl); padding-bottom: var(--space-xl); }
+  .camp__image { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius-lg); overflow: hidden; }
+  .camp__image img { width: 100%; height: 100%; object-fit: cover; }
+  .camp h2 { margin-bottom: var(--space-lg); }
+  .camp__metric { display: flex; align-items: center; gap: var(--space-md); margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 1px solid var(--color-border); }
+  .camp__metric strong { font-family: var(--font-display); font-size: var(--fs-xl); color: var(--color-accent-strong); }
+  .camp__metric span { max-width: 20ch; color: var(--color-text-muted); font-size: var(--fs-xs); }
+
+  .food-access { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(3rem, 8vw, 8rem); padding-top: var(--space-xl); padding-bottom: var(--space-xl); border-top: 1px solid var(--color-border); }
+  .food-access__copy > p + p { margin-top: var(--space-md); }
+
+  .service-future { max-width: 1280px; padding-top: var(--space-xl); padding-bottom: calc(var(--space-3xl) + 6rem); text-align: center; }
+  .service-future__quote { position: relative; max-width: 1200px; margin: var(--space-xl) auto; font-family: var(--font-display); font-size: clamp(2.25rem, 5.4vw, 4.75rem); line-height: 1.22; }
+  .service-future__quote blockquote { margin: 0; }
+  .service-future__quote-base { filter: blur(8px); opacity: .38; }
+  .service-future__quote-sharp { position: absolute; inset: 0; opacity: var(--focus-opacity, 0); -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--focus-center, 0px) - var(--focus-half, 0px) - var(--focus-feather, 0px)), #000 calc(var(--focus-center, 0px) - var(--focus-half, 0px)), #000 calc(var(--focus-center, 0px) + var(--focus-half, 0px)), transparent calc(var(--focus-center, 0px) + var(--focus-half, 0px) + var(--focus-feather, 0px))); mask-image: linear-gradient(to bottom, transparent calc(var(--focus-center, 0px) - var(--focus-half, 0px) - var(--focus-feather, 0px)), #000 calc(var(--focus-center, 0px) - var(--focus-half, 0px)), #000 calc(var(--focus-center, 0px) + var(--focus-half, 0px)), transparent calc(var(--focus-center, 0px) + var(--focus-half, 0px) + var(--focus-feather, 0px))); transition: opacity 120ms ease; will-change: mask-image; }
+  .service-future__copy { max-width: 820px; margin: var(--space-xl) auto 0; color: var(--color-text-muted); font-size: var(--fs-md); line-height: 1.7; }
+
+  @media (max-width: 960px) {
+    .advocacy-secondary { grid-template-columns: 1fr; }
+    .advocacy-card { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(280px, 1.2fr); }
+    .advocacy-card__image, .advocacy-card__placeholder { height: 100%; min-height: 360px; }
+  }
+
+  @media (max-width: 760px) {
+    .section-shell { padding: var(--space-2xl) var(--space-md); }
+    .section-heading, .service-intro, .advocacy-lead, .mentoring, .fundraising, .fair-grid, .camp, .food-access { grid-template-columns: 1fr; }
+    .section-heading .section-kicker { margin-bottom: calc(-1 * var(--space-md)); }
+    .service-intro__marker { display: none; }
+    .advocacy-grid, .outreach-columns { grid-template-columns: 1fr; }
+    .advocacy-card { display: flex; }
+    .advocacy-card__image, .advocacy-card__placeholder { height: min(75vw, 360px); min-height: 0; }
+    .advocacy-lead { min-height: 0; }
+    .advocacy-lead__media { min-height: min(118vw, 620px); }
+    .advocacy-lead__copy { padding: var(--space-xl) var(--space-lg); }
+    .mentoring__visual { min-height: min(145vw, 650px); }
+    .impact-list { grid-template-columns: 1fr; }
+    .impact-list li { display: flex; justify-content: space-between; gap: var(--space-md); padding-bottom: var(--space-sm); border-bottom: 1px solid var(--color-border); }
+    .fair-impact > div { min-height: 140px; padding: var(--space-md); }
+    .event-list { padding: var(--space-lg); }
+    .camp { display: flex; flex-direction: column; align-items: stretch; }
+    .camp__image { order: 2; }
+  }
+
+  @media (max-width: 520px) {
+    .service-future__quote { font-size: clamp(1.8rem, 9vw, 2.7rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service-future__quote-base { filter: none; opacity: 1; }
+    .service-future__quote-sharp { display: none; }
+  }
+</style>

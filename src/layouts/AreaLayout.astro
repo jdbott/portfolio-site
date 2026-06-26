@@ -5,6 +5,10 @@ import Timeline from '../components/Timeline.astro';
 import ContentCards from '../components/ContentCards.astro';
 import Gallery from '../components/Gallery.astro';
 import Quote from '../components/Quote.astro';
+import PursuitsShowcase from '../components/PursuitsShowcase.astro';
+import ServiceShowcase from '../components/ServiceShowcase.astro';
+import { Image } from 'astro:assets';
+import aboutImg from '../assets/jasonaboutme.jpg';
 import type { Area } from '../data/areas';
 
 interface Props {
@@ -12,26 +16,94 @@ interface Props {
 }
 
 const { area } = Astro.props;
+const showAreaHero = area.slug !== 'projects' && area.slug !== 'about';
 ---
 
 <BaseLayout title={`${area.title} — Jason Bottino`} description={area.summary} navAlwaysVisible>
-  <header class="area-hero">
-    <div class="area-hero__inner">
-      <p class="area-hero__eyebrow scroll-reveal">{String(area.order).padStart(2, '0')} — Area</p>
-      <h1 class="area-hero__title scroll-reveal">{area.title}</h1>
-      <p class="area-hero__summary scroll-reveal">{area.summary}</p>
-    </div>
-  </header>
+  {showAreaHero && (
+    <header class:list={['area-hero', { 'area-hero--compact': area.slug === 'academics' || area.slug === 'service' }]}>
+      <div class="area-hero__inner">
+        <p class="area-hero__eyebrow scroll-reveal">
+          {String(area.order).padStart(2, '0')} — {area.eyebrow ?? 'Area'}
+        </p>
+        <h1 class="area-hero__title scroll-reveal">{area.title}</h1>
+        <p class="area-hero__summary scroll-reveal">{area.summary}</p>
+      </div>
 
-  <StatsBand stats={area.stats} />
+      {(area.slug === 'academics' || area.slug === 'pursuits' || area.slug === 'service') && (
+        <div class="area-hero__scroll-cue scroll-reveal" aria-hidden="true">
+          <span class="area-hero__scroll-line"></span>
+          <span>Scroll</span>
+        </div>
+      )}
+    </header>
+  )}
 
-  {area.timeline.length > 0 && <Timeline items={area.timeline} />}
+  {area.slug === 'projects' ? (
+    <section class="projects-placeholder" aria-label="Projects coming soon">
+      <div class="projects-placeholder__inner scroll-reveal">
+        <p class="projects-placeholder__kicker">Under construction</p>
+        <h2 class="projects-placeholder__heading">Project details forthcoming.</h2>
+        <p class="projects-placeholder__text">
+          Check back soon to see what I am building, testing, and refining. This section will become a focused archive of selected technical projects, experiments, and longer-term builds.
+        </p>
+      </div>
+    </section>
+  ) : area.slug === 'about' ? (
+    <section class="about-placeholder" aria-label="About Me">
+      <div class="about-placeholder__inner">
+        <div class="about-placeholder__copy scroll-reveal">
+          <p class="about-placeholder__kicker">About Me</p>
+          <h2 class="about-placeholder__heading">Ambition, curiosity, and passing it along.</h2>
+          <p class="about-placeholder__text">
+            I’ve always been ambitious, but never because someone handed me directions to follow. In fact, as a kid, I was the one who threw away the directions...immediately. A robotics kit meant to build a cart that drove in a straight line became a 3-axis robotic arm after a few late nights, and marble runs spiraled into crazy experiments including a breath-powered pneumatic loop-de-loop that ended with me swallowing the marble. My family still jokes about me...passing it along. The phrase stuck, though, because it fits into something I actually believe: I was lucky to grow up with the tools, space, and encouragement to chase whatever caught my curiosity, and I’m sharply aware not everyone gets that - so I try to pass it along for real, through service and advocacy that gives those same opportunities to other people. Most of what I know I taught myself: take something in, take it apart, figure out how it works. I’m intense and competitive about what I care about, especially STEM, but I’ve never let that stand between me and people. More than anything, I want to prove what sustained effort does: that the right mindset and a few core values, repeated seriously over years, grow into something far bigger than where they started.
+          </p>
+        </div>
 
-  <ContentCards heading={area.cardsHeading} cards={area.cards} />
+        <div class="about-placeholder__portrait scroll-reveal" aria-label="Portrait placeholder">
+          <div class="about-placeholder__portrait-frame">
+            <Image
+              class="about-placeholder__image"
+              src={aboutImg}
+              alt="Portrait of Jason Bottino"
+              widths={[420, 640, 820, 1100, 1400]}
+              sizes="(max-width: 860px) calc(100vw - 5rem), 34vw"
+              quality={90}
+              loading="eager"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  ) : area.slug === 'service' ? (
+    <>
+      <StatsBand stats={area.stats} compact spacedTail />
+      <ServiceShowcase />
+    </>
+  ) : area.pursuits ? (
+    <PursuitsShowcase pursuits={area.pursuits} />
+  ) : (
+    <>
+      <StatsBand stats={area.stats} compact={area.slug === 'academics'} />
 
-  <Gallery count={area.galleryCount} />
+      {area.timeline.length > 0 && <Timeline items={area.timeline} />}
 
-  <Quote quote={area.quote} />
+      {area.feature && (
+        <section class:list={['area-feature', { 'area-feature--compact': area.slug === 'academics' }]}>
+          <div class="area-feature__inner scroll-reveal">
+            <h2 class="area-feature__heading">{area.feature.heading}</h2>
+            <p class="area-feature__text">{area.feature.text}</p>
+          </div>
+        </section>
+      )}
+
+      <ContentCards heading={area.cardsHeading} cards={area.cards} compact={area.slug === 'academics'} />
+
+      {area.galleryCount > 0 && <Gallery count={area.galleryCount} compact={area.slug === 'academics'} />}
+
+      {area.quote && <Quote quote={area.quote} />}
+    </>
+  )}
 </BaseLayout>
 
 <script>
@@ -56,10 +128,17 @@ const { area } = Astro.props;
 
 <style>
   .area-hero {
+    position: relative;
     min-height: 60vh;
     display: flex;
     align-items: center;
     padding: var(--space-3xl) var(--space-lg) var(--space-xl);
+  }
+
+  .area-hero--compact {
+    min-height: 48vh;
+    padding-top: clamp(6rem, 11vh, 7rem);
+    padding-bottom: var(--space-lg);
   }
 
   .area-hero__inner {
@@ -88,5 +167,199 @@ const { area } = Astro.props;
     font-size: var(--fs-md);
     color: var(--color-text-muted);
     max-width: 50ch;
+  }
+
+  .area-hero__scroll-cue {
+    position: absolute;
+    right: var(--space-lg);
+    bottom: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-text-faint);
+    font-size: var(--fs-2xs);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .area-hero__scroll-line {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--color-text-faint), transparent);
+    animation: area-scroll-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes area-scroll-pulse {
+    0%, 100% { transform: scaleY(1); opacity: 0.4; }
+    50% { transform: scaleY(1.4); opacity: 1; }
+  }
+
+  .area-feature {
+    padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+  }
+
+  .area-feature--compact {
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-lg);
+  }
+
+  @media (max-width: 700px) {
+    .area-hero__scroll-cue {
+      right: var(--space-md);
+      bottom: var(--space-md);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .area-hero__scroll-line {
+      animation: none;
+    }
+  }
+
+  .area-feature__inner {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-xl);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-raised);
+  }
+
+  .area-feature__heading {
+    font-size: clamp(1.5rem, 4vw, var(--fs-xl));
+    margin-bottom: var(--space-md);
+  }
+
+  .area-feature__text {
+    max-width: 70ch;
+    color: var(--color-text-muted);
+    font-size: var(--fs-md);
+  }
+
+  .projects-placeholder,
+  .about-placeholder {
+    padding: clamp(7rem, 16vh, 10rem) var(--space-lg) var(--space-3xl);
+  }
+
+  .projects-placeholder__inner {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: clamp(2rem, 6vw, 5rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 12% 20%, rgba(226, 51, 77, 0.18), transparent 34%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015));
+    overflow: hidden;
+    position: relative;
+  }
+
+  .projects-placeholder__inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    transform: translateX(-120%);
+    animation: projects-sheen 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .projects-placeholder__kicker,
+  .about-placeholder__kicker {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-accent-strong);
+    margin-bottom: var(--space-sm);
+  }
+
+  .projects-placeholder__heading,
+  .about-placeholder__heading {
+    font-size: clamp(2rem, 6vw, var(--fs-2xl));
+    margin-bottom: var(--space-md);
+  }
+
+  .projects-placeholder__text,
+  .about-placeholder__text {
+    max-width: 68ch;
+    color: var(--color-text-muted);
+    font-size: var(--fs-md);
+  }
+
+  .about-placeholder__inner {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .about-placeholder__copy {
+    min-width: 0;
+  }
+
+  .about-placeholder__note {
+    margin-top: var(--space-md);
+    max-width: 66ch;
+    color: var(--color-text-faint);
+    font-size: var(--fs-xs);
+  }
+
+  .about-placeholder__note code {
+    color: var(--color-text-muted);
+    font-family: inherit;
+  }
+
+  .about-placeholder__portrait {
+    min-width: 0;
+  }
+
+  .about-placeholder__portrait-frame {
+    aspect-ratio: 4 / 5;
+    min-height: 420px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-raised);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22);
+  }
+
+  .about-placeholder__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+
+  @keyframes projects-sheen {
+    0%, 55% { transform: translateX(-120%); }
+    80%, 100% { transform: translateX(120%); }
+  }
+
+  @media (max-width: 860px) {
+    .about-placeholder__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .about-placeholder__portrait-frame {
+      min-height: 320px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .projects-placeholder__inner::after {
+      animation: none;
+      transform: none;
+      opacity: 0;
+    }
   }
 </style>

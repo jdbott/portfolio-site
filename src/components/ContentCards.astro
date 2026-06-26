@@ -4,12 +4,13 @@ import type { Card } from '../data/areas';
 interface Props {
   heading: string;
   cards: Card[];
+  compact?: boolean;
 }
 
-const { heading, cards } = Astro.props;
+const { heading, cards, compact = false } = Astro.props;
 ---
 
-<section class="content-cards">
+<section class:list={['content-cards', { 'content-cards--compact': compact }]}>
   <div class="content-cards__inner">
     <h2 class="content-cards__heading scroll-reveal">{heading}</h2>
     <div class="content-cards__grid">
@@ -27,6 +28,11 @@ const { heading, cards } = Astro.props;
 <style>
   .content-cards {
     padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .content-cards--compact {
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-lg);
   }
 
   .content-cards__inner {
