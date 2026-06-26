@@ -205,7 +205,7 @@ export const areas: Area[] = [
     navLabel: 'Projects',
     eyebrow: 'In Progress',
     summary:
-      'A dedicated project archive is in progress. Check back soon for details on what I am building, testing, and refining.',
+      'A growing archive of coding projects, AI and automation work, and business ventures I am building outside of robotics — write-ups in progress.',
     order: 4,
     stats: [],
     timeline: [],

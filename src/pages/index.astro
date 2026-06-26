@@ -4,6 +4,15 @@ import Hero from '../components/Hero.astro';
 import RobotReveal from '../components/RobotReveal.astro';
 import StatsBand from '../components/StatsBand.astro';
 import AreaHighlights from '../components/AreaHighlights.astro';
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Jason Bottino',
+  url: 'https://jasonbottino.com',
+  description: 'Student, roboticist, and builder — FIRST Tech Challenge robotics, STEM advocacy, and academics.',
+  sameAs: ['https://github.com/jdbott'],
+};
 ---
 
 <BaseLayout>
@@ -12,6 +21,8 @@ import AreaHighlights from '../components/AreaHighlights.astro';
   <StatsBand />
   <AreaHighlights />
 </BaseLayout>
+
+<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
 
 <script>
   const reveals = document.querySelectorAll('.scroll-reveal');
