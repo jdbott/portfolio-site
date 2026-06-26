@@ -162,7 +162,7 @@ const mainSkills = [
     title: 'CAD & Mechanical Design',
     kicker: 'Design',
     description:
-      'What started as basic part modeling grew into full custom design — by my fourth season I was designing nearly every mechanism on our robot from scratch in CAD, iterating quickly between concept, simulation, and a manufacturable part.',
+      'I lead the full mechanical design process for our robots, using Onshape to fully CAD each build before manufacturing begins. I do most of the robot CAD myself, but I also delegate smaller design tasks to interested members and increase the difficulty as they build confidence. That process has taught me how to turn an idea into a complete system that can actually be built, assembled, repaired, and improved, not just something that looks good on a screen.',
     imagePath: 'src/assets/robotics-skills/cad.jpg',
   },
   {
@@ -170,7 +170,7 @@ const mainSkills = [
     title: 'Manufacturing',
     kicker: 'Build',
     description:
-      'Translating a CAD model into a working part means thinking in tolerances, materials, and machine limitations from the very first sketch. I’ve learned to manufacture custom components in-house, turning ambitious designs into robots that actually survive a competition day.',
+      'I manufacture the robot parts I design, from slicing 3D prints to making metal and wood plates and preparing custom parts for the final build. I have worked hands-on with water jets, laser cutters, manual milling tools, and other CNC-controlled and manual metal and wood fabrication tools. Manufacturing has taught me that design and fabrication are inseparable: a good part is not just possible in CAD, but practical, repeatable, and worth the setup time when the same skills can be reused across the robot.',
     imagePath: 'src/assets/robotics-skills/manufacturing.jpg',
   },
   {
@@ -178,16 +178,16 @@ const mainSkills = [
     title: 'Programming',
     kicker: 'Software',
     description:
-      'I started by writing the autonomous and driver-control code that helped us land a top-50 (out of 8000+ teams) autonomous OPR worldwide during INTO THE DEEP, and grew from there into writing the control systems, vision pipelines, and tuning routines that make a robot consistent under pressure.',
+      'I taught myself Java and Python so I could write our autonomous routines, pathing, vision state machines, and tele-op code. Robotics programming has taught me to prioritize consistency above everything else, because the best code is not just the version that works once, but the version that keeps working when a match is on the line. That mindset now carries into other technical work too, from building reliable autonomous routines with strong OPRs and world rankings to making websites and tools that work across devices and platforms.',
     imagePath: 'src/assets/robotics-skills/programming.jpg',
   },
   {
-    key: 'electrical',
-    title: 'Electrical Leadership',
-    kicker: 'Electrical',
+    key: 'graphic-design',
+    title: 'Graphic Design',
+    kicker: 'Design Systems',
     description:
-      'Wiring a competition robot well means planning the entire electrical system before a single bolt goes in — power distribution, signal routing, and failure points all have to be considered up front. As captain, I took ownership of our electrical system end-to-end, from design through troubleshooting on the competition floor.',
-    imagePath: 'src/assets/robotics-skills/electrical.jpg',
+      'Robotics gave me a reason to learn how to make information clear, compelling, and recognizable. I have made team shirts, posters, pit displays, sponsor materials, social media graphics, CAD renders, and outreach resources using tools like Canva, Blender, PowerPoint, and apparel-design software. What started as making materials for a team has grown into a much broader skill: building a recognizable brand, making technical ideas easier to understand, and applying design thinking to web design, school projects, presentations, and the way I share knowledge.',
+    imagePath: 'src/assets/robotics-skills/graphic-design.jpg',
   },
 ];
 
@@ -196,15 +196,15 @@ const secondarySkills = [
     key: 'fundraising',
     title: 'Fundraising',
     description:
-      'I’ve learned to turn a single conversation into the kind of recurring sponsorship that keeps a team running season after season.',
+      'I have raised about $14,000 for robotics by reaching out to companies, individuals, and organizations and learning how to explain why the work matters. Fundraising has taught me that support is not just about asking for money; it is about building real relationships with people who understand the value of the program. Some of those connections have already turned into future internship and job opportunities, which showed me how much clear communication and long-term trust can matter.',
     imagePath: 'src/assets/robotics-skills/fundraising.jpg',
   },
   {
-    key: 'graphic-design',
-    title: 'Graphic Design',
+    key: 'electrical',
+    title: 'Electrical Management',
     description:
-      'From competition banners to team apparel and outreach materials, I’ve picked up the design skills to make sure everything we put in front of judges, sponsors, and the public looks intentional.',
-    imagePath: 'src/assets/robotics-skills/graphic-design.jpg',
+      'Electrical work taught me how much a robot depends on details that are easy to underestimate until something fails. I learned about wiring, crimping, diagrams, cable routing, and designing around electrical access so the robot is easier to build, troubleshoot, and maintain. It also made me better at thinking ahead about the problems that appear after a design is “finished,” especially when newer members need to understand and work on the system.',
+    imagePath: 'src/assets/robotics-skills/electrical.jpg',
   },
 ];
 
@@ -214,7 +214,7 @@ const outreachFeature = {
   key: 'outreach',
   title: 'Outreach Organization',
   description:
-    'Planning and running outreach events — from a single STEM day to a multi-week summer program — has taught me how to turn a robot demo into a lasting community partnership.',
+    'Outreach has become one of the biggest ways robotics has shaped how I work, lead, and communicate. It covers so much that it is hard to fit into one section: planning events, mentoring teams locally and globally, documenting systems, organizing team communication, scheduling, and speaking with sponsors. More than anything, outreach matters to me because robotics changed my life, and I want other students to have the same kind of access while building the communication and organization skills that now affect almost everything I do.',
   imagePath: 'src/assets/robotics-skills/outreach.jpg',
 };
 ---
@@ -654,7 +654,7 @@ const outreachFeature = {
   .skill-feature__content h3 { margin-bottom: var(--space-md); font-size: clamp(1.5rem, 3vw, 2rem); }
   .skill-feature__content p { color: var(--color-text-muted); font-size: var(--fs-sm); line-height: 1.75; }
 
-  .skills-secondary { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); margin-top: var(--space-xl); padding-top: var(--space-xl); border-top: 1px solid var(--color-border); }
+  .skills-secondary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg); margin-top: var(--space-xl); padding-top: var(--space-xl); border-top: 1px solid var(--color-border); }
   .skill-secondary { padding: var(--space-lg); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-raised); }
   .skill-secondary__visual { position: relative; aspect-ratio: 16 / 10; margin-bottom: var(--space-md); border: 1px solid var(--color-border); border-radius: var(--radius-sm); overflow: hidden; background: linear-gradient(145deg, var(--color-bg-overlay), var(--color-bg-raised)); }
   .skill-secondary__placeholder { position: absolute; inset: auto var(--space-sm) var(--space-sm); display: flex; flex-direction: column; gap: var(--space-3xs); color: var(--color-text-faint); font-size: var(--fs-2xs); text-transform: uppercase; letter-spacing: .1em; }
