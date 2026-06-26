@@ -3,12 +3,13 @@ import type { Quote } from '../data/areas';
 
 interface Props {
   quote: Quote;
+  compact?: boolean;
 }
 
-const { quote } = Astro.props;
+const { quote, compact = false } = Astro.props;
 ---
 
-<section class="quote">
+<section class:list={['quote', { 'quote--compact': compact }]}>
   <div class="quote__inner scroll-reveal">
     <blockquote class="quote__text">&ldquo;{quote.text}&rdquo;</blockquote>
     <p class="quote__attribution">&mdash; {quote.attribution}</p>
@@ -33,6 +34,10 @@ const { quote } = Astro.props;
     font-size: clamp(1.25rem, 4vw, var(--fs-xl));
     line-height: var(--lh-snug);
     margin: 0;
+  }
+
+  .quote--compact .quote__text {
+    font-size: clamp(1.1rem, 2.6vw, var(--fs-lg));
   }
 
   .quote__attribution {

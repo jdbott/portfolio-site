@@ -1,21 +1,58 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 interface Props {
   count: number;
   heading?: string;
   compact?: boolean;
+  images?: ImageMetadata[];
+  /** Uncropped, natural-aspect-ratio collage (CSS column masonry) instead of the cropped square grid. */
+  masonry?: boolean;
 }
 
-const { count, heading = 'Gallery', compact = false } = Astro.props;
-const items = Array.from({ length: count }, (_, i) => i);
+const { count, heading = 'Gallery', compact = false, images, masonry = false } = Astro.props;
+const hasImages = Array.isArray(images) && images.length > 0;
+const items = Array.from({ length: hasImages ? images!.length : count }, (_, i) => i);
+const useMasonry = masonry && hasImages;
 ---
 
 <section class:list={['gallery', { 'gallery--compact': compact }]}>
   <div class="gallery__inner">
     <h2 class="gallery__heading scroll-reveal">{heading}</h2>
-    <div class="gallery__grid">
+    <div class:list={['gallery__grid', { 'gallery__grid--masonry': useMasonry }]}>
       {items.map((i) => (
-        <button class="gallery__item scroll-reveal" type="button" data-index={i} aria-label={`Open image ${i + 1}`}>
-          <span class="gallery__placeholder">{i + 1}</span>
+        <button
+          class:list={['gallery__item', 'scroll-reveal', { 'gallery__item--masonry': useMasonry }]}
+          type="button"
+          data-index={i}
+          aria-label={`Open ${hasImages ? 'photo' : 'image'} ${i + 1}`}
+        >
+          {hasImages ? (
+            useMasonry ? (
+              <Image
+                class="gallery__item-image gallery__item-image--natural"
+                src={images![i]}
+                alt=""
+                widths={[320, 480, 640, 860]}
+                sizes="(max-width: 640px) 45vw, 30vw"
+                quality={85}
+                loading="lazy"
+              />
+            ) : (
+              <Image
+                class="gallery__item-image"
+                src={images![i]}
+                alt=""
+                widths={[300, 480, 640]}
+                sizes="(max-width: 640px) 45vw, 30vw"
+                quality={85}
+                loading="lazy"
+              />
+            )
+          ) : (
+            <span class="gallery__placeholder">{i + 1}</span>
+          )}
         </button>
       ))}
     </div>
@@ -24,7 +61,24 @@ const items = Array.from({ length: count }, (_, i) => i);
   <div class="gallery__lightbox" data-lightbox hidden>
     <button class="gallery__lightbox-close" type="button" data-lightbox-close aria-label="Close">&times;</button>
     <div class="gallery__lightbox-frame">
-      <span class="gallery__lightbox-placeholder" data-lightbox-content></span>
+      {hasImages ? (
+        items.map((i) => (
+          <Image
+            class="gallery__lightbox-image"
+            data-lightbox-image
+            data-index={i}
+            src={images![i]}
+            alt=""
+            widths={[480, 768, 1080, 1400]}
+            sizes="80vw"
+            quality={90}
+            loading="lazy"
+            style="display: none"
+          />
+        ))
+      ) : (
+        <span class="gallery__lightbox-placeholder" data-lightbox-content></span>
+      )}
     </div>
   </div>
 </section>
@@ -34,12 +88,19 @@ const items = Array.from({ length: count }, (_, i) => i);
   if (gallery) {
     const lightbox = gallery.querySelector<HTMLElement>('[data-lightbox]');
     const lightboxContent = gallery.querySelector<HTMLElement>('[data-lightbox-content]');
+    const lightboxImages = gallery.querySelectorAll<HTMLElement>('[data-lightbox-image]');
     const closeBtn = gallery.querySelector<HTMLElement>('[data-lightbox-close]');
     const items = gallery.querySelectorAll<HTMLElement>('.gallery__item');
 
     const open = (index: number) => {
-      if (!lightbox || !lightboxContent) return;
-      lightboxContent.textContent = String(index + 1);
+      if (!lightbox) return;
+      if (lightboxImages.length > 0) {
+        lightboxImages.forEach((img) => {
+          img.style.display = Number(img.dataset.index) === index ? 'block' : 'none';
+        });
+      } else if (lightboxContent) {
+        lightboxContent.textContent = String(index + 1);
+      }
       lightbox.hidden = false;
     };
 
@@ -93,6 +154,14 @@ const items = Array.from({ length: count }, (_, i) => i);
     gap: var(--space-md);
   }
 
+  /* Uncropped collage: CSS column masonry preserves each photo's natural
+     aspect ratio and packs them tightly without overlap or forced cropping. */
+  .gallery__grid--masonry {
+    display: block;
+    column-count: 3;
+    column-gap: var(--space-md);
+  }
+
   .gallery__item {
     appearance: none;
     border: 1px solid var(--color-border);
@@ -109,6 +178,14 @@ const items = Array.from({ length: count }, (_, i) => i);
       transform var(--duration-fast) var(--ease-out-expo);
   }
 
+  .gallery__item--masonry {
+    display: block;
+    width: 100%;
+    aspect-ratio: auto;
+    margin-bottom: var(--space-md);
+    break-inside: avoid;
+  }
+
   .gallery__item:hover {
     border-color: var(--color-accent);
     transform: translateY(-2px);
@@ -119,6 +196,18 @@ const items = Array.from({ length: count }, (_, i) => i);
     font-weight: 800;
     font-size: var(--fs-xl);
     color: var(--color-text-faint);
+  }
+
+  .gallery__item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+
+  .gallery__item-image--natural {
+    height: auto;
+    object-fit: unset;
   }
 
   .gallery__lightbox {
@@ -146,11 +235,26 @@ const items = Array.from({ length: count }, (_, i) => i);
     justify-content: center;
   }
 
+  .gallery__lightbox-frame:has(.gallery__lightbox-image) {
+    width: auto;
+    height: auto;
+    aspect-ratio: auto;
+    background: none;
+    border: none;
+  }
+
   .gallery__lightbox-placeholder {
     font-family: var(--font-display);
     font-weight: 800;
     font-size: var(--fs-2xl);
     color: var(--color-text-faint);
+  }
+
+  .gallery__lightbox-image {
+    max-width: min(86vw, 1100px);
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
   }
 
   .gallery__lightbox-close {
@@ -173,11 +277,19 @@ const items = Array.from({ length: count }, (_, i) => i);
     .gallery__grid {
       grid-template-columns: repeat(2, 1fr);
     }
+
+    .gallery__grid--masonry {
+      column-count: 2;
+    }
   }
 
   @media (max-width: 480px) {
     .gallery__grid {
       grid-template-columns: 1fr;
+    }
+
+    .gallery__grid--masonry {
+      column-count: 1;
     }
   }
 </style>

@@ -1,0 +1,680 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Gallery from './Gallery.astro';
+
+interface Props {
+  galleryCount?: number;
+}
+
+const { galleryCount = 16 } = Astro.props;
+
+// Drop a file named to match a skill's `key` (e.g. "cad.jpg") into
+// src/assets/robotics-skills/ and it replaces that skill's placeholder
+// automatically — no code changes needed.
+const skillImageModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/robotics-skills/*.{jpg,jpeg,png,JPG,JPEG,PNG}',
+  { eager: true }
+);
+
+const getSkillImage = (key: string) => {
+  const match = Object.entries(skillImageModules).find(([path]) => {
+    const filename = path.split('/').pop() ?? '';
+    return filename.startsWith(`${key}.`);
+  });
+  return match?.[1]?.default;
+};
+
+// CAD carousel — cycles through these photos in src/assets/robotics-skills/cad/,
+// in this exact order, faster than the Pursuits photography rotation.
+const cadImageModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/robotics-skills/cad/*.{jpg,jpeg,png,JPG,JPEG,PNG}',
+  { eager: true }
+);
+// macOS sometimes uses a narrow no-break space (U+202F) instead of a
+// regular space in auto-generated filenames (e.g. screenshot timestamps),
+// so whitespace is normalized before comparing.
+const normalizeWhitespace = (s: string) => s.replace(/\s+/g, ' ');
+const getCadImage = (filename: string) => {
+  const target = normalizeWhitespace(filename);
+  const entry = Object.entries(cadImageModules).find(([path]) => {
+    const basename = path.split('/').pop() ?? '';
+    return normalizeWhitespace(basename) === target;
+  });
+  return entry?.[1]?.default;
+};
+const cadImages = [
+  'Image 3-13-25 at 2.58 PM.jpg',
+  'fulllcc.png',
+  'base-5.png',
+  'decode2.png',
+  'diffypng.jpeg',
+]
+  .map(getCadImage)
+  .filter((img): img is ImageMetadata => Boolean(img));
+const cadBounds = cadImages.reduce(
+  (bounds, img) => ({
+    width: Math.max(bounds.width, img.width),
+    height: Math.max(bounds.height, img.height),
+  }),
+  { width: 1, height: 1 }
+);
+const cadBoundsAspect = cadBounds.width / cadBounds.height;
+
+// Manufacturing & Programming — short autoplaying video clips instead of
+// photos. Matched by exact filename in src/assets/robotics-skills/.
+const videoModules = import.meta.glob<string>(
+  '../assets/robotics-skills/*.mp4',
+  { eager: true, query: '?url', import: 'default' }
+);
+const getVideoUrl = (filename: string) => {
+  const entry = Object.entries(videoModules).find(([path]) => path.endsWith(`/${filename}`));
+  const rawUrl = entry?.[1];
+  if (!rawUrl) return undefined;
+  // The resolved URL only partially escapes these filenames (full of
+  // hashtags) — spaces before the first "#" become %20, but "#" itself
+  // and anything after it are left raw, so the browser truncates the
+  // request as a URL fragment. Rebuild every path segment from scratch
+  // so all reserved characters are escaped consistently.
+  return rawUrl
+    .split('/')
+    .map((segment) => encodeURIComponent(decodeURIComponent(segment)))
+    .join('/');
+};
+const SKILL_VIDEOS: Record<string, string> = {
+  manufacturing: 'manufacturing-flywheel-muted.mp4',
+  programming: 'programming-5-specimen-auto-muted.mp4',
+};
+
+// Drop any number of photos (any filenames) into
+// src/assets/robotics-gallery/ and they automatically populate the
+// gallery grid below, sorted by filename.
+const galleryImageModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/robotics-gallery/*.{jpg,jpeg,png,JPG,JPEG,PNG}',
+  { eager: true }
+);
+const galleryImages = Object.entries(galleryImageModules)
+  .sort(([a], [b]) => {
+    const aFirst = a.toLowerCase().includes('2467');
+    const bFirst = b.toLowerCase().includes('2467');
+    if (aFirst !== bFirst) return aFirst ? -1 : 1;
+    return a.localeCompare(b);
+  })
+  .map(([, mod]) => mod.default);
+
+const seasons = [
+  {
+    number: '01',
+    game: 'Power Play',
+    tag: 'Rookie Season',
+    description:
+      'Having never done robotics before, I rose to contributing multiple hours a week and becoming a key player on the team — earning the second pick on the No. 1 alliance at the State Championship and going on to compete in the state finals.',
+    highlights: ['Rookie season', 'Key contributor', 'State finalist'],
+  },
+  {
+    number: '02',
+    game: 'Center Stage',
+    tag: 'Year 2',
+    description:
+      'I grew quickly as both a programmer and a leader, becoming team captain. I won my first-ever competition, earned the Inspire Award, was the first pick on the finalist alliance at States, and finished with a top-200 Autonomous OPR worldwide.',
+    highlights: ['Team captain', 'Inspire Award', 'Competition champion', 'Top 200 Auto OPR (world)'],
+  },
+  {
+    number: '03',
+    game: 'Into the Deep',
+    tag: 'Year 3 · Team Captain',
+    description:
+      'As team captain, I became a multi-disciplinary contributor across mechanical, software, and fabrication. We won the State Championship and reached the No. 1 alliance at the divisional level of the World Championship — the same year I expanded into outreach, federal advocacy, and extensive mentorship.',
+    highlights: ['Team captain', 'State champion', 'World Championship — No. 1 alliance (division)'],
+  },
+  {
+    number: '04',
+    game: 'Decode',
+    tag: 'Year 4 · Most Recent',
+    description:
+      'This season was defined by full custom manufacturing — I designed nearly everything in CAD from the ground up. We won both qualifiers we attended and reached the semifinals at both the State Championship and New England’s premier event.',
+    highlights: ['Custom CAD & manufacturing', '2x qualifier champion', 'State & regional semifinalist'],
+  },
+];
+
+const flagshipAwards = [
+  {
+    eyebrow: 'Team Honor',
+    title: '3x Inspire Award',
+    subtitle: '',
+    description:
+      'The Inspire Award is the highest honor a team can earn in FIRST Tech Challenge — recognizing the team that most embodies the program’s mission across every judged category. Our team has won it three times across qualifiers and championships.',
+  },
+  {
+    eyebrow: 'Individual Honor',
+    title: 'FIRST Leadership Award',
+    subtitle: 'World Championship Finalist',
+    description:
+      'The FIRST Leadership Award is the highest individual honor in FTC. Nominated by my team as a semifinalist, I was selected as one of New Hampshire’s finalists out of dozens of nominees statewide — ultimately representing New Hampshire as one of roughly 160 finalists worldwide, out of about 110,000 FTC participants, at the World Championship.',
+  },
+];
+
+const otherAwards = ['Control Award', 'Innovate Award', 'Connect Award'];
+
+const mainSkills = [
+  {
+    key: 'cad',
+    title: 'CAD & Mechanical Design',
+    kicker: 'Design',
+    description:
+      'What started as basic part modeling grew into full custom design — by my fourth season I was designing nearly every mechanism on our robot from scratch in CAD, iterating quickly between concept, simulation, and a manufacturable part.',
+    imagePath: 'src/assets/robotics-skills/cad.jpg',
+  },
+  {
+    key: 'manufacturing',
+    title: 'Manufacturing',
+    kicker: 'Build',
+    description:
+      'Translating a CAD model into a working part means thinking in tolerances, materials, and machine limitations from the very first sketch. I’ve learned to manufacture custom components in-house, turning ambitious designs into robots that actually survive a competition day.',
+    imagePath: 'src/assets/robotics-skills/manufacturing.jpg',
+  },
+  {
+    key: 'programming',
+    title: 'Programming',
+    kicker: 'Software',
+    description:
+      'I started by writing the autonomous and driver-control code that helped us land a top-50 (out of 8000+ teams) autonomous OPR worldwide during INTO THE DEEP, and grew from there into writing the control systems, vision pipelines, and tuning routines that make a robot consistent under pressure.',
+    imagePath: 'src/assets/robotics-skills/programming.jpg',
+  },
+  {
+    key: 'electrical',
+    title: 'Electrical Leadership',
+    kicker: 'Electrical',
+    description:
+      'Wiring a competition robot well means planning the entire electrical system before a single bolt goes in — power distribution, signal routing, and failure points all have to be considered up front. As captain, I took ownership of our electrical system end-to-end, from design through troubleshooting on the competition floor.',
+    imagePath: 'src/assets/robotics-skills/electrical.jpg',
+  },
+];
+
+const secondarySkills = [
+  {
+    key: 'fundraising',
+    title: 'Fundraising',
+    description:
+      'I’ve learned to turn a single conversation into the kind of recurring sponsorship that keeps a team running season after season.',
+    imagePath: 'src/assets/robotics-skills/fundraising.jpg',
+  },
+  {
+    key: 'graphic-design',
+    title: 'Graphic Design',
+    description:
+      'From competition banners to team apparel and outreach materials, I’ve picked up the design skills to make sure everything we put in front of judges, sponsors, and the public looks intentional.',
+    imagePath: 'src/assets/robotics-skills/graphic-design.jpg',
+  },
+];
+
+// Outreach Organization gets its own full-width horizontal feature rather
+// than sharing the compact 3-up grid above.
+const outreachFeature = {
+  key: 'outreach',
+  title: 'Outreach Organization',
+  description:
+    'Planning and running outreach events — from a single STEM day to a multi-week summer program — has taught me how to turn a robot demo into a lasting community partnership.',
+  imagePath: 'src/assets/robotics-skills/outreach.jpg',
+};
+---
+
+<main class="robotics-showcase">
+  <section class="season-timeline section-shell" aria-labelledby="season-title">
+    <div class="section-heading scroll-reveal">
+      <p class="section-kicker">The Journey</p>
+      <h2 id="season-title">Five seasons, one continuous build.</h2>
+      <p>From a rookie who had never touched a robot to team captain leading mechanical, software, and outreach.</p>
+    </div>
+
+    <ol class="season-list">
+      {seasons.map((season) => (
+        <li class="season-item scroll-reveal">
+          <span class="season-number" aria-hidden="true">{season.number}</span>
+          <div class="season-body">
+            <div class="season-heading-row">
+              <h3>{season.game}</h3>
+              <span class="season-tag">{season.tag}</span>
+            </div>
+            <p class="season-description">{season.description}</p>
+            <ul class="season-highlights" aria-label={`${season.game} highlights`}>
+              {season.highlights.map((highlight) => <li>{highlight}</li>)}
+            </ul>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="awards section-shell" aria-labelledby="awards-title">
+    <div class="section-heading scroll-reveal">
+      <p class="section-kicker">Recognition</p>
+      <h2 id="awards-title">Awards & Highlights</h2>
+    </div>
+
+    <div class="awards-grid">
+      {flagshipAwards.map((award, index) => (
+        <article class="award-card scroll-reveal">
+          <p class="card-number">{String(index + 1).padStart(2, '0')} / {award.eyebrow}</p>
+          <h3>{award.title}{award.subtitle && <span class="award-card__subtitle"> — {award.subtitle}</span>}</h3>
+          <p>{award.description}</p>
+        </article>
+      ))}
+    </div>
+
+    <article class="award-secondary scroll-reveal">
+      <p class="card-number">03 / Also Recognized</p>
+      <h3>Additional Team Awards</h3>
+      <ul class="award-secondary__list">
+        {otherAwards.map((award) => <li>{award}</li>)}
+      </ul>
+    </article>
+  </section>
+
+  <section class="skills section-shell" aria-labelledby="skills-title">
+    <div class="section-heading scroll-reveal">
+      <p class="section-kicker">What Robotics Taught Me</p>
+      <h2 id="skills-title">Skills I’ve Built</h2>
+    </div>
+
+    <div class="skills-main">
+      {mainSkills.map((skill, index) => {
+        const videoFilename = SKILL_VIDEOS[skill.key];
+        const videoUrl = videoFilename ? getVideoUrl(videoFilename) : undefined;
+        const isCad = skill.key === 'cad';
+        const image = !videoUrl && !isCad ? getSkillImage(skill.key) : undefined;
+        const visualClasses = [
+          'skill__visual',
+          videoUrl && 'skill__visual--video',
+          skill.key === 'programming' && 'skill__visual--programming',
+          isCad && cadImages.length > 0 && 'skill__visual--cad',
+        ].filter(Boolean);
+        const visualStyle = [
+          `--index: ${index}`,
+          isCad && cadImages.length > 0 ? `--cad-bounds-aspect: ${cadBoundsAspect}` : undefined,
+        ].filter(Boolean).join('; ');
+
+        return (
+        <article class="skill scroll-reveal" style={`--index: ${index}`}>
+          <div class:list={visualClasses} style={visualStyle}>
+            {videoUrl ? (
+              <>
+                <video
+                  class="skill__video"
+                  data-skill-video
+                  data-skill-video-key={skill.key}
+                  src={videoUrl}
+                  autoplay
+                  loop
+                  muted
+                  defaultMuted
+                  playsinline
+                  webkit-playsinline="true"
+                  preload="auto"
+                />
+                <button class="skill__video-prompt" type="button" data-skill-video-prompt>
+                  Click to play video
+                </button>
+                {skill.key === 'programming' && (
+                  <span class="skill__video-badge">
+                    Fully autonomous — no driver, program &amp; sensor input only
+                  </span>
+                )}
+              </>
+            ) : isCad && cadImages.length > 0 ? (
+              <div class="skill__carousel" data-skill-carousel>
+                {cadImages.map((cadImg, cadIndex) => (
+                  <Image
+                    class:list={['skill__image', 'skill__carousel-image', { 'is-active': cadIndex === 0 }]}
+                    src={cadImg}
+                    alt={`${skill.title} reference ${cadIndex + 1}`}
+                    widths={[480, 720, 960, 1280]}
+                    sizes="(max-width: 760px) 100vw, 45vw"
+                    quality={90}
+                    loading={cadIndex === 0 ? 'eager' : 'lazy'}
+                  />
+                ))}
+              </div>
+            ) : image ? (
+              <Image
+                class="skill__image"
+                src={image}
+                alt={skill.title}
+                widths={[480, 720, 960, 1280]}
+                sizes="(max-width: 760px) 100vw, 45vw"
+                quality={90}
+                loading="lazy"
+              />
+            ) : (
+              <div class="skill__placeholder">
+                <span>Image forthcoming</span>
+                <code>{skill.imagePath}</code>
+              </div>
+            )}
+          </div>
+          <div class="skill__content">
+            <p class="skill__kicker">{skill.kicker}</p>
+            <h3>{skill.title}</h3>
+            <p>{skill.description}</p>
+          </div>
+        </article>
+        );
+      })}
+    </div>
+
+    <article class="skill-feature scroll-reveal">
+      <div class="skill-feature__visual">
+        <div class="skill-feature__placeholder">
+          <span>Image forthcoming</span>
+          <code>{outreachFeature.imagePath}</code>
+        </div>
+      </div>
+      <div class="skill-feature__content">
+        <h3>{outreachFeature.title}</h3>
+        <p>{outreachFeature.description}</p>
+      </div>
+    </article>
+
+    <div class="skills-secondary">
+      {secondarySkills.map((skill) => {
+        const image = getSkillImage(skill.key);
+        return (
+        <article class="skill-secondary scroll-reveal">
+          <div class="skill-secondary__visual">
+            {image ? (
+              <Image
+                class="skill-secondary__image"
+                src={image}
+                alt={skill.title}
+                widths={[320, 480, 640]}
+                sizes="(max-width: 900px) 100vw, 30vw"
+                quality={90}
+                loading="lazy"
+              />
+            ) : (
+              <div class="skill-secondary__placeholder">
+                <span>Image forthcoming</span>
+                <code>{skill.imagePath}</code>
+              </div>
+            )}
+          </div>
+          <h3>{skill.title}</h3>
+          <p>{skill.description}</p>
+        </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <Gallery count={galleryCount} images={galleryImages} masonry />
+</main>
+
+<script>
+  // ---- CAD carousel ---- (faster than the Pursuits photography rotation)
+  const CAD_INTERVAL_MS = 1800;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-skill-carousel]').forEach((carousel) => {
+    const images = Array.from(carousel.querySelectorAll<HTMLElement>('.skill__carousel-image'));
+    if (images.length < 2 || reduceMotion) return;
+
+    let activeIndex = 0;
+    setInterval(() => {
+      images[activeIndex]?.classList.remove('is-active');
+      activeIndex = (activeIndex + 1) % images.length;
+      images[activeIndex]?.classList.add('is-active');
+    }, CAD_INTERVAL_MS);
+  });
+
+  // ---- Skill videos ----
+  // Muted autoplay is the only reliably-allowed kind across browsers, so the
+  // videos stay muted and we explicitly drive play() as each video approaches
+  // the viewport. Safari can reject autoplay even for muted inline videos, so
+  // a prompt appears only when playback does not actually begin.
+  const skillVideos = Array.from(document.querySelectorAll<HTMLVideoElement>('[data-skill-video]'));
+  if (skillVideos.length > 0) {
+    const warmedVideos = new WeakSet<HTMLVideoElement>();
+
+    const setVideoPrompt = (video: HTMLVideoElement, visible: boolean) => {
+      const prompt = video.parentElement?.querySelector<HTMLElement>('[data-skill-video-prompt]');
+      prompt?.classList.toggle('is-visible', visible);
+    };
+
+    const setMutedAutoplayState = (video: HTMLVideoElement) => {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.volume = 0;
+      video.playsInline = true;
+      video.autoplay = true;
+      video.loop = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', 'true');
+      video.setAttribute('preload', 'auto');
+    };
+
+    const tryPlay = (video: HTMLVideoElement, attempt = 0) => {
+      setMutedAutoplayState(video);
+
+      if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) {
+        video.load();
+      }
+
+      const p = video.play();
+      if (p && typeof p.catch === 'function') {
+        p.then(() => {
+          setVideoPrompt(video, false);
+        }).catch(() => {
+          if (attempt < 8) {
+            window.setTimeout(() => tryPlay(video, attempt + 1), 180 + attempt * 120);
+          } else {
+            setVideoPrompt(video, true);
+          }
+        });
+      }
+    };
+
+    const warmAndPlay = (video: HTMLVideoElement) => {
+      if (!warmedVideos.has(video)) {
+        warmedVideos.add(video);
+        video.load();
+      }
+      tryPlay(video);
+    };
+
+    skillVideos.forEach((video) => {
+      setMutedAutoplayState(video);
+      video.addEventListener('loadedmetadata', () => tryPlay(video));
+      video.addEventListener('canplay', () => tryPlay(video));
+      video.addEventListener('playing', () => setVideoPrompt(video, false));
+      video.addEventListener('pause', () => {
+        if (!document.hidden) setVideoPrompt(video, true);
+      });
+      video.closest('.scroll-reveal')?.addEventListener('transitionend', () => tryPlay(video));
+      video.parentElement?.querySelector<HTMLElement>('[data-skill-video-prompt]')?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        tryPlay(video, 8);
+      });
+      warmAndPlay(video);
+    });
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const video = entry.target as HTMLVideoElement;
+            if (entry.isIntersecting) warmAndPlay(video);
+          }
+        },
+        { threshold: 0.01, rootMargin: '600px 0px' }
+      );
+      skillVideos.forEach((video) => io.observe(video));
+    } else {
+      skillVideos.forEach(warmAndPlay);
+    }
+
+    // Click a video to retry muted playback.
+    skillVideos.forEach((video) => {
+      video.addEventListener('click', () => tryPlay(video, 8));
+    });
+
+    const retrySkillVideos = () => {
+      skillVideos.forEach((video) => {
+        if (video.paused || video.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) {
+          warmAndPlay(video);
+        }
+      });
+    };
+
+    window.addEventListener('pageshow', retrySkillVideos);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) retrySkillVideos();
+    });
+    window.addEventListener('scroll', retrySkillVideos, { passive: true });
+    window.addEventListener('pointerdown', retrySkillVideos, { passive: true });
+    window.addEventListener('touchstart', retrySkillVideos, { passive: true });
+    [250, 800, 1600, 3200].forEach((delay) => {
+      window.setTimeout(retrySkillVideos, delay);
+    });
+
+    window.setTimeout(() => {
+      skillVideos.forEach((video) => {
+        if (video.paused) setVideoPrompt(video, true);
+      });
+    }, 1800);
+  }
+</script>
+
+<style>
+  .robotics-showcase { overflow: hidden; }
+  .section-shell { max-width: var(--content-max-width); margin: 0 auto; padding: var(--space-3xl) var(--space-lg); }
+  .section-kicker { margin-bottom: var(--space-sm); color: var(--color-gold); font-size: var(--fs-xs); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
+  .section-heading { max-width: 760px; margin-bottom: var(--space-xl); }
+  .section-heading h2 { font-size: clamp(2rem, 5vw, var(--fs-2xl)); margin-bottom: var(--space-md); }
+  .section-heading > p:last-child { color: var(--color-text-muted); font-size: var(--fs-md); line-height: 1.7; }
+
+  /* ---- Season timeline ---- */
+  .season-timeline { padding-top: var(--space-xl); }
+  .season-list { list-style: none; margin: 0; padding: 0; }
+  .season-item { position: relative; display: grid; grid-template-columns: 6rem minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); padding: var(--space-xl) 0; border-top: 1px solid var(--color-border); }
+  .season-item:first-child { border-top: none; }
+  .season-number { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1; color: var(--color-accent-soft); }
+  .season-heading-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-md); margin-bottom: var(--space-sm); }
+  .season-heading-row h3 { font-size: clamp(1.5rem, 3.2vw, 2rem); }
+  .season-tag { color: var(--color-gold); font-size: var(--fs-xs); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+  .season-description { color: var(--color-text-muted); font-size: var(--fs-sm); line-height: 1.75; max-width: 70ch; }
+  .season-highlights { display: flex; flex-wrap: wrap; gap: var(--space-2xs); list-style: none; margin: var(--space-md) 0 0; padding: 0; }
+  .season-highlights li { padding: var(--space-3xs) var(--space-xs); border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-bg-raised); color: var(--color-text-muted); font-size: var(--fs-xs); }
+
+  /* ---- Awards ---- */
+  .awards { padding-top: var(--space-xl); padding-bottom: var(--space-xl); border-top: 1px solid var(--color-border); }
+  .awards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); margin-bottom: var(--space-lg); }
+  .award-card { padding: clamp(1.75rem, 3vw, 2.5rem); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: radial-gradient(circle at 18% 18%, var(--color-accent-soft), transparent 42%), var(--color-bg-raised); }
+  .card-number { margin-bottom: var(--space-sm); color: var(--color-accent-strong); font-size: var(--fs-xs); letter-spacing: .14em; text-transform: uppercase; }
+  .award-card h3, .award-secondary h3 { margin-bottom: var(--space-md); font-size: clamp(1.4rem, 2.8vw, 1.85rem); }
+  .award-card__subtitle { font-size: 0.62em; font-weight: 600; color: var(--color-text-muted); }
+  .award-card p:not(.card-number), .award-secondary p:not(.card-number) { color: var(--color-text-muted); line-height: 1.72; }
+  .award-secondary { padding: clamp(1.5rem, 3vw, 2.25rem); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-raised); }
+  .award-secondary__list { display: flex; flex-wrap: wrap; gap: var(--space-sm); list-style: none; margin: var(--space-sm) 0 0; padding: 0; }
+  .award-secondary__list li { padding: var(--space-xs) var(--space-md); border: 1px solid var(--color-gold-soft); border-radius: 999px; background: var(--color-gold-soft); color: var(--color-gold); font-size: var(--fs-sm); font-weight: 600; }
+
+  /* ---- Skills ---- */
+  .skills { padding-top: var(--space-xl); border-top: 1px solid var(--color-border); }
+  .skills-main { display: flex; flex-direction: column; }
+
+  .skill { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr); align-items: center; gap: clamp(2rem, 6vw, 5rem); padding: var(--space-xl) 0; border-top: 1px solid var(--color-border); }
+  .skill:first-child { border-top: none; }
+  .skill:nth-child(even) .skill__visual { order: 2; }
+
+  .skill__visual { position: relative; min-height: clamp(260px, 32vw, 380px); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: radial-gradient(circle at calc(20% + var(--index) * 18%) 30%, var(--color-accent-soft), transparent 38%), linear-gradient(145deg, var(--color-bg-overlay), var(--color-bg-raised)); }
+  .skill__visual--cad { min-height: 0; aspect-ratio: var(--cad-bounds-aspect, 16 / 10); }
+  .skill__visual--programming { min-height: 0; aspect-ratio: 1 / 1; }
+  .skill__placeholder { position: absolute; inset: auto var(--space-lg) var(--space-lg); display: flex; flex-direction: column; gap: var(--space-2xs); color: var(--color-text-faint); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .12em; }
+  .skill__placeholder code { color: var(--color-text-muted); font-size: var(--fs-2xs); letter-spacing: 0; text-transform: none; overflow-wrap: anywhere; }
+  /* Media fills the relatively-positioned .skill__visual via absolute
+     inset:0 rather than height:100%. The visual only has min-height (no
+     definite height), so a percentage height would collapse to 0 for the
+     carousel and inflate to the video's intrinsic height for the video. */
+  .skill__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+  .skill__visual--cad .skill__image { object-fit: contain; background: var(--color-bg-overlay); }
+
+  /* CAD photo carousel — absolutely-stacked images crossfade */
+  .skill__carousel { position: absolute; inset: 0; }
+  .skill__carousel-image { position: absolute; inset: 0; opacity: 0; transition: opacity 420ms var(--ease-out-expo); }
+  .skill__carousel-image.is-active { opacity: 1; }
+
+  /* Manufacturing & Programming videos */
+  .skill__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
+  .skill__visual--programming .skill__video { object-fit: contain; background: var(--color-bg-overlay); }
+  .skill__video-prompt {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+    display: none;
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    background: rgba(7, 7, 10, 0.78);
+    backdrop-filter: blur(10px);
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .skill__video-prompt.is-visible { display: inline-flex; }
+  .skill__video-badge {
+    position: absolute;
+    left: var(--space-md);
+    bottom: var(--space-md);
+    z-index: 2;
+    max-width: calc(100% - 2 * var(--space-md));
+    padding: var(--space-2xs) var(--space-sm);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    background: rgba(7, 7, 10, 0.78);
+    backdrop-filter: blur(10px);
+    color: var(--color-text);
+    font-size: var(--fs-2xs);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .skill__kicker { margin-bottom: var(--space-sm); color: var(--color-gold); font-size: var(--fs-xs); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+  .skill__content h3 { margin-bottom: var(--space-md); font-size: clamp(1.5rem, 3vw, 2rem); }
+  .skill__content p:not(.skill__kicker) { color: var(--color-text-muted); font-size: var(--fs-sm); line-height: 1.75; }
+
+  /* Outreach Organization — full-width horizontal feature */
+  .skill-feature { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr); align-items: center; gap: clamp(2rem, 5vw, 4rem); padding: var(--space-xl) 0; border-top: 1px solid var(--color-border); }
+  .skill-feature__visual { position: relative; min-height: clamp(180px, 18vw, 240px); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: linear-gradient(145deg, var(--color-bg-overlay), var(--color-bg-raised)); }
+  .skill-feature__placeholder { position: absolute; inset: auto var(--space-lg) var(--space-lg); display: flex; flex-direction: column; gap: var(--space-2xs); color: var(--color-text-faint); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .12em; }
+  .skill-feature__placeholder code { color: var(--color-text-muted); font-size: var(--fs-2xs); letter-spacing: 0; text-transform: none; overflow-wrap: anywhere; }
+  .skill-feature__content h3 { margin-bottom: var(--space-md); font-size: clamp(1.5rem, 3vw, 2rem); }
+  .skill-feature__content p { color: var(--color-text-muted); font-size: var(--fs-sm); line-height: 1.75; }
+
+  .skills-secondary { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); margin-top: var(--space-xl); padding-top: var(--space-xl); border-top: 1px solid var(--color-border); }
+  .skill-secondary { padding: var(--space-lg); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-raised); }
+  .skill-secondary__visual { position: relative; aspect-ratio: 16 / 10; margin-bottom: var(--space-md); border: 1px solid var(--color-border); border-radius: var(--radius-sm); overflow: hidden; background: linear-gradient(145deg, var(--color-bg-overlay), var(--color-bg-raised)); }
+  .skill-secondary__placeholder { position: absolute; inset: auto var(--space-sm) var(--space-sm); display: flex; flex-direction: column; gap: var(--space-3xs); color: var(--color-text-faint); font-size: var(--fs-2xs); text-transform: uppercase; letter-spacing: .1em; }
+  .skill-secondary__placeholder code { color: var(--color-text-muted); font-size: 0.65rem; letter-spacing: 0; text-transform: none; overflow-wrap: anywhere; }
+  .skill-secondary__image { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+  .skill-secondary h3 { margin-bottom: var(--space-sm); font-size: var(--fs-md); }
+  .skill-secondary p { color: var(--color-text-muted); font-size: var(--fs-sm); line-height: 1.7; }
+
+  @media (max-width: 900px) {
+    .awards-grid { grid-template-columns: 1fr; }
+    .skills-secondary { grid-template-columns: 1fr; }
+    .skill-feature { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 760px) {
+    .section-shell { padding: var(--space-2xl) var(--space-md); }
+    .season-item { grid-template-columns: 1fr; gap: var(--space-sm); }
+    .season-number { font-size: 2rem; }
+    .skill { grid-template-columns: 1fr; gap: var(--space-lg); padding: var(--space-2xl) 0; }
+    .skill:nth-child(even) .skill__visual { order: initial; }
+    .skill__visual { min-height: min(72vw, 360px); }
+  }
+</style>

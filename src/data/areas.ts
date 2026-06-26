@@ -65,47 +65,23 @@ export const areas: Area[] = [
     slug: 'robotics',
     title: 'Robotics',
     navLabel: 'Robotics',
+    eyebrow: 'FIRST Tech Challenge · Team Tesseract',
     summary:
-      'FTC robotics — technical leadership, build, programming, manufacturing, outreach, and fundraising.',
+      'Robotics is my life — though not in the way that might first come to mind. I don’t merely compete, though when I do, I compete well; I don’t merely build robots, though I’ve built real depth in CAD, programming, and everything technical along the way. What matters more is using robotics as a vehicle for something bigger than itself: the foundational skills that will serve me wherever I go next. I’ve raised thousands of dollars for a team I once had no idea how to fund, built relationships with company founders and CEOs, and organized outreach events designed to outlast my own time on the team. When I say I do robotics, I want people to hear past the competition results — toward everything it actually teaches that’s hard to learn anywhere else.',
     order: 1,
     stats: [
-      { value: '4+', label: 'Seasons competed' },
-      { value: '3', label: 'Subsystems led' },
-      { value: '5', label: 'Regional awards' },
-      { value: '12+', label: 'Outreach events' },
+      { value: '5', label: 'Seasons competing (entering Year 5)' },
+      { value: '3x', label: '1st Inspire Award — FTC’s highest honor' },
+      { value: '8', label: 'Competitions won' },
+      { value: '45', label: 'Students mentored across 5 FTC teams' },
     ],
-    timeline: [
-      {
-        date: 'Sep',
-        title: 'Kickoff & strategy',
-        description: 'Placeholder — season reveal, game analysis, and early prototyping.',
-      },
-      {
-        date: 'Nov',
-        title: 'Build season',
-        description: 'Placeholder — design, manufacture, and program the competition robot.',
-      },
-      {
-        date: 'Jan',
-        title: 'Qualifiers',
-        description: 'Placeholder — first competitions, iteration, and driver practice.',
-      },
-      {
-        date: 'Mar',
-        title: 'Regionals & beyond',
-        description: 'Placeholder — regional results and advancement.',
-      },
-    ],
-    cardsHeading: 'Awards & highlights',
-    cards: [
-      { title: 'Award placeholder', description: 'Short description of the award or milestone.', tag: 'Award' },
-      { title: 'Award placeholder', description: 'Short description of the award or milestone.', tag: 'Award' },
-      { title: 'Project placeholder', description: 'Short description of a build/programming highlight.', tag: 'Build' },
-    ],
-    galleryCount: 6,
+    timeline: [],
+    cardsHeading: '',
+    cards: [],
+    galleryCount: 16,
     quote: {
-      text: 'Placeholder quote about the team, the season, or a lesson learned along the way.',
-      attribution: 'Jason Bottino',
+      text: 'This student turns innovation into action, designing fully cadded robots and building a lasting manufacturing pipeline for the team. They lead through guided independence, creating new programs to write autonomous code and mentoring teams locally and globally. Their impact reaches far beyond competition — they organize science fairs, they raise funds for STEM access, and bring FIRST to statewide audiences. They model true Gracious Professionalism and Cooperation, they help opponents, uplift teammates, and ensure every voice is valued. And most importantly, they build systems, resources, and relationships that will strengthen FIRST long after graduation.',
+      attribution: 'FIRST New Hampshire Leadership, naming Jason a New Hampshire Dean’s List FIRST Leadership Award winner (FTC Decode)',
     },
   },
   {
@@ -147,7 +123,7 @@ export const areas: Area[] = [
         title: 'Exploring STEM Foundations',
         meta: '2024–2025 · 4.0 unweighted GPA',
         description:
-          'Exposure to physics, chemistry, and computer science introduced distinct ways of thinking and solidified my interest in engineering and applied science. Honors Physics and Honors Chemistry were particular favorites; physics also led me to explore fluid, soft-body, and rigid-body simulations in Blender as a way to visualize and apply classroom concepts.',
+          'Freshman year exposed me to physics, chemistry, and computer science, which helped lay the foundation for many skills I have used in robotics and strengthened my interest in engineering and applied science. Honors Physics and Honors Chemistry were two of my favorite courses, and physics even led me to explore fluid, soft-body, and rigid-body simulations in Blender as a way to apply classroom concepts.',
         courses: [
           'Honors Physics',
           'Honors Chemistry',
@@ -162,7 +138,7 @@ export const areas: Area[] = [
         title: 'Time Management & Long-Term Planning',
         meta: '2025–2026 · 4.0 unweighted GPA',
         description:
-          'AP Chemistry and AP Seminar demanded sustained effort, careful research, and consistent execution across long-term assignments. Balancing that rigor with commitments outside school strengthened my ability to break large goals into manageable phases—a method I now apply to robotics, software development, and other technical projects.',
+          'Sophomore year challenged me to manage a heavier workload through AP Chemistry, AP Seminar, and other advanced courses. These classes required steady effort, careful research, and strong long-term planning. Balancing that work with commitments outside school helped me get better at breaking large goals into smaller steps, which is a skill I now use in robotics, software development, and other technical projects.',
         courses: [
           'AP Chemistry',
           'Accelerated Math 3 (Honors)',
@@ -177,7 +153,7 @@ export const areas: Area[] = [
         title: 'Engineering in Greater Depth',
         meta: '2026–2027 · Current year',
         description:
-          'My most rigorous schedule to date pairs three AP courses with dedicated mechanical and electrical engineering study. I hope to deepen my understanding of modeling, simulation, automation, and computational problem-solving while maintaining a 4.0 GPA, strengthening proactive study habits, and mentoring new members in robotics.',
+          'Junior year will be my most rigorous schedule so far, with three AP courses along with dedicated mechanical and electrical engineering study. I want to deepen my understanding of modeling, simulation, automation, and computational problem-solving while maintaining a 4.0 GPA, strengthening my study habits, and continuing to excel in robotics and other extracurriculars.',
         courses: [
           'AP Calculus BC',
           'AP Research',
@@ -193,7 +169,7 @@ export const areas: Area[] = [
         title: 'The Hardest Engineering Classes Offered',
         meta: '2027–2028 · Planned senior year',
         description:
-          'I plan to take the most advanced STEM electives my school offers, including courses such as multivariable calculus, linear algebra, AP Physics C, and additional advanced coursework still to come. This year will be focused on pushing deeper into the engineering, physics, and mathematical foundations that support the work I want to pursue beyond high school.',
+          'Senior year is planned around the most advanced STEM electives my school offers, including multivariable calculus, linear algebra, AP Physics C, and other advanced coursework still to be determined. I want this year to help me go deeper into the engineering, physics, and math foundations that support the work I hope to pursue beyond high school.',
         courses: [
           'Multivariable Calculus',
           'Linear Algebra',
@@ -220,7 +196,7 @@ export const areas: Area[] = [
     galleryCount: 0,
     feature: {
       heading: 'Academic interests & what’s next',
-      text: 'My academic interests drive much of what I pursue outside the classroom. Even when a course does not fit into my schedule or is not offered at school, it often becomes a starting point for independent exploration. I am currently learning MATLAB, exploring opportunities to work with college professors and contribute to research, and continuing to build my interests in mechanical engineering, electrical engineering, and computer science through both school-based and independent work.',
+      text: 'My academic interests shape a lot of what I pursue outside the classroom. When a course does not fit into my schedule or is not offered at school, I often use it as a starting point for independent learning. Right now, I am learning MATLAB, looking for opportunities to work with college professors and contribute to research, and continuing to build my interests in mechanical engineering, electrical engineering, and computer science through both school-based and independent work.',
     },
   },
   {
@@ -242,7 +218,7 @@ export const areas: Area[] = [
     title: 'Pursuits',
     navLabel: 'Pursuits',
     summary:
-      'My pursuits are deliberately open-ended: practices I can guide over years, using creativity and discipline to support both mental and physical well-being. Photography and bonsai provide room for observation, experimentation, and long-term vision; track and fitness turn commitment into tangible progress. Together—alongside reading and cooking—they give me space to think introspectively, apply skills across unfamiliar contexts, and remember that meaningful achievement is driven by sustained effort.',
+      'My pursuits outside of my main activities are deliberately open-ended, namely using the concepts of creativity and discipline to support my mental and physical wellbeing. Photography and bonsai offer room to experiment and think long term, supporting the former, while track and fitness turn commitment into real progress, bolstering the latter. Together, alongside activities like reading and cooking, they give me space to think introspectively, apply skills across unfamiliar contexts, and remember that meaningful achievement is driven by sustained effort.',
     order: 5,
     stats: [],
     timeline: [],
@@ -253,7 +229,7 @@ export const areas: Area[] = [
         title: 'Photography',
         kicker: 'Creativity · Observation · Since 2023',
         description:
-          'My interest began with borrowing my mother’s phone to photograph anything that caught my attention, then grew through phone photography into a serious mirrorless-camera practice. I am drawn to wildlife, astrophotography, natural landscapes, and human-made structures—often pairing photography with long hikes or travel, including recreating historical images from the places I visit. I shoot in RAW and use Adobe Lightroom to shape color, composition, detail, and movement into a deliberate emotional story. The possibility that my strongest photograph may still be ahead of me keeps me learning and refining the craft.',
+          'I started by borrowing my mom\'s phone to photograph whatever caught my eye, then moved into phone photography and eventually a real mirrorless setup. I\'m drawn to wildlife, astrophotography, landscapes, and old buildings—I\'ll pair a shoot with a long hike or a trip, sometimes recreating a historical photo from the same spot. I shoot RAW and edit in Lightroom, working color, composition, and detail until the image feels like the moment I actually saw. I haven\'t taken my best shot yet, and that\'s what keeps me going.',
         details: [],
         imagePath: 'src/assets/pursuits/photography.jpg',
       },
@@ -261,7 +237,7 @@ export const areas: Area[] = [
         title: 'Bonsai',
         kicker: 'Patience · Design · Long-term thinking',
         description:
-          'I began practicing bonsai in middle school and now maintain about five trees, including jade, ficus, and Chinese elm. Through pruning, wiring, repotting, and seasonal care, I have learned to evaluate how small decisions in the present shape results years later. One jade began as a small plant that I wanted to develop into a compact tree with a substantial trunk. I planned years ahead: moving it into a larger grow pot, allowing it to thicken, then cutting it back so it could rebud into the structure I had envisioned. Bonsai makes patience visible.',
+          'I started bonsai in middle school, and I now care for about five trees, including jade, ficus, and Chinese elm. A lot of bonsai is slow work: pruning, wiring, repotting, and making small choices that might not fully show for years. One of my jade trees started as a small plant, but I wanted it to become a compact tree with a thicker trunk. I moved it into a larger pot, let it grow out, and then cut it back so it could start building the shape I had pictured. Bonsai has taught me patience in a very physical way.',
         details: ['5 trees', 'Jade', 'Ficus', 'Chinese elm'],
         imagePath: 'src/assets/pursuits/bonsai.jpg',
       },
@@ -269,7 +245,7 @@ export const areas: Area[] = [
         title: 'Track & Field',
         kicker: 'Community · Consistency · 5+ seasons',
         description:
-          'I compete for Hollis Brookline High School in the 400 meters, shot put, and discus. Track gives me something individual training cannot: a social environment where teammates create positive pressure to keep showing up and improving. Over five-plus seasons, I have become faster, developed better pacing, and learned to value progress produced through consistency rather than any single result. The experience supports both my physical health and the sense of community that makes sustained effort easier to maintain.',
+          'I compete for Hollis Brookline High School in the 400 meters, shot put, and discus. Track has given me a kind of motivation that is hard to get from training alone. Being around teammates pushes me to keep showing up, even on days when I would not have the same drive by myself. Over more than five seasons, I have gotten faster, improved my pacing, and learned that progress usually comes from steady work rather than one big result. It has been good for my physical health, but it has also given me a community that makes the work easier to keep doing.',
         details: ['400 meters', 'Shot put', 'Discus', 'Hollis Brookline'],
         imagePath: 'src/assets/pursuits/track.jpg',
       },
@@ -277,7 +253,7 @@ export const areas: Area[] = [
         title: 'Fitness',
         kicker: 'Discipline · Well-being · Self-direction',
         description:
-          'Strength training, interval work, and cardio give me a setting where progress is governed by my own consistency and willingness to push. My father’s commitment to exercise first showed me the practical value of strength, mobility, and being physically capable in everyday life. Training multiple times each week has shifted from feeling like another difficult obligation to becoming time I deliberately protect, even when other responsibilities compete for it. Current goals—including a controlled one-arm push-up and muscle-ups—give that discipline a clear direction.',
+          'Fitness started as something I knew was important, but it has become something I genuinely protect time for. My dad\'s commitment to exercise first showed me the value of being strong, mobile, and physically capable in everyday life. Now, strength training, interval work, and cardio give me a place where progress depends mostly on consistency and effort. Training several times a week has become less of an obligation and more of a routine I want to keep. Goals like a controlled one-arm push-up and muscle-ups give me something clear to work toward.',
         details: ['Strength training', 'Intervals', 'Cardio', 'Multiple sessions weekly'],
         imagePath: 'src/assets/pursuits/fitness.jpg',
       },
