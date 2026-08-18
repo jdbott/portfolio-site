@@ -157,7 +157,7 @@ export const areas: Area[] = [
         courses: [
           'AP Calculus BC',
           'AP Research',
-          'AP Computer Science A',
+          'AP Statistics',
           'Electrical Engineering (Honors)',
           'Mechanical Engineering (Honors)',
           'English 11',
